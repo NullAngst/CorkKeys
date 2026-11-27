@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- No <uses-permission> at all. Without INTERNET, Android refuses every network connection.
+<!-- No permissions at all. Without INTERNET, Android refuses every network connection.
      CI fails the build if the merged release manifest ever gains a permission. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 

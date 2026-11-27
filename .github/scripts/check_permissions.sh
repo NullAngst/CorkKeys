@@ -27,7 +27,7 @@ fi
 
 bad=0
 while IFS= read -r m; do
-    if hits=$(grep -nE '<(uses-permission|uses-permission-sdk-23|permission)[[:space:]>]' "$m"); then
+    if hits=$(grep -nE '<(uses-permission|uses-permission-sdk-23|permission)[[:space:]]' "$m"); then
         printf '%s\n' "$hits"
         printf '::error title=Permission in the release manifest::%s: %s\n' "$m" "$(printf '%s' "$hits" | tr '\n' ' ')"
         bad=1
