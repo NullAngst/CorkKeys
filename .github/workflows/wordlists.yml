@@ -1,0 +1,40 @@
+name: word lists
+
+# Refreshes app/src/main/assets/words/ from the aosp-dictionaries repository and commits the
+# result to the wordlists-refresh branch. Open a pull request from that branch to bring it in.
+# Runs from the Actions tab (Run workflow), or when the wordlists-refresh branch is pushed.
+on:
+  workflow_dispatch:
+  push:
+    branches: [wordlists-refresh]
+    paths:
+      - tools/convert_wordlist.sh
+      - .github/scripts/fetch_wordlists.sh
+      - .github/workflows/wordlists.yml
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fetch and convert the word lists
+        run: bash .github/scripts/fetch_wordlists.sh
+
+      - name: Commit to the wordlists-refresh branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          source=$(cat wordlists_source.txt)
+          rm -f wordlists_source.txt
+          git add app/src/main/assets/words
+          if git diff --cached --quiet; then
+            echo "::notice title=No change::The word lists already match the source."
+            exit 0
+          fi
+          git commit -q -m "Refresh word lists" -m "$source"
+          git push --force origin HEAD:refs/heads/wordlists-refresh
+          echo "::notice title=Committed::$(git rev-parse HEAD) on wordlists-refresh"
