@@ -141,4 +141,8 @@
     <string name="words_allow_all">Volver a sugerirlas todas</string>
     <string name="words_delete">Borrar</string>
     <string name="words_all_sure">¿Borrar toda la lista?</string>
+
+    <!-- Swipe -->
+    <string name="settings_swipe">Escritura deslizando</string>
+    <string name="settings_swipe_sub">Desliza sobre las letras y levanta el dedo: entra la palabra, con alternativas en la barra. Borrar justo después quita la palabra entera. Desactivado en campos de contraseña, correo, dirección y números.</string>
 </resources>

@@ -55,6 +55,10 @@ class Composer(private val svc: KeyboardService) {
 
     private var lastEditAt = 0L
 
+    /** [word] is a swiped word, still swappable for one of its alternatives. */
+    var swiped = false
+        private set
+
     fun start(initialSelStart: Int, initialSelEnd: Int) {
         selStart = initialSelStart
         selEnd = initialSelEnd
@@ -65,11 +69,13 @@ class Composer(private val svc: KeyboardService) {
         tapped = true
         lastCorrection = null
         rejected = null
+        swiped = false
         resync()
     }
 
     /** The field is closing: whatever is being typed stays as it is. */
     fun finish() {
+        swiped = false
         if (word.isNotEmpty()) {
             ic?.finishComposingText()
             word.setLength(0)
@@ -91,6 +97,7 @@ class Composer(private val svc: KeyboardService) {
         lastSpace = -1
         lastCorrection = null
         rejected = null
+        swiped = false
         if (word.isNotEmpty()) {
             val atEnd = newStart == newEnd && candStart >= 0 && candEnd == newEnd && candEnd - candStart == word.length
             if (atEnd) return
@@ -149,8 +156,40 @@ class Composer(private val svc: KeyboardService) {
         if (out == typed && tapped) svc.learn(typed)
         word.setLength(0)
         tapped = true
+        swiped = false
         svc.wordChanged()
         return if (out != typed) out else null
+    }
+
+    /**
+     * A swiped word goes in, with a space before it unless the cursor is at the start or after
+     * an opening bracket or quote. It stays the app's composing text, so an alternative from the
+     * strip can swap in and backspace can take it all back.
+     */
+    fun swipe(w: String) {
+        finishWord(false)
+        lastCorrection = null
+        rejected = null
+        lastSpace = -1
+        autoSpaced = false
+        edit { c ->
+            c.beginBatchEdit()
+            if (Punctuation.spaceBeforeSwipe(c.getTextBeforeCursor(1, 0))) c.commitText(" ", 1)
+            c.setComposingText(w, 1)
+            c.endBatchEdit()
+        }
+        word.setLength(0)
+        word.append(w)
+        tapped = false
+        swiped = true
+    }
+
+    /** Swaps the swiped word for one of its alternatives. */
+    fun swapSwiped(w: String) {
+        if (!swiped) return
+        edit { it.setComposingText(w, 1) }
+        word.setLength(0)
+        word.append(w)
     }
 
     /** Picks a word from the strip in place of the word being typed. [slot] 0 is the word as typed. */
@@ -182,6 +221,11 @@ class Composer(private val svc: KeyboardService) {
             return
         }
         val one = if (s.length == 1) s[0] else '\u0000'
+        // After a swipe, letters carry on the swiped word while suggestions are on; anything else ends it.
+        if (swiped) {
+            swiped = false
+            if (!svc.composing() || !isWordChar(one)) finishWord(false)
+        }
         if (svc.composing() && (isWordStart(one) || word.isNotEmpty() && isWordChar(one))) {
             if (word.isEmpty()) capsLock = shiftLocked
             lastCorrection = null
@@ -217,7 +261,7 @@ class Composer(private val svc: KeyboardService) {
             return
         }
         val typed = word.toString()
-        val corrected = finishWord(true)
+        val corrected = finishWord(!swiped)
         lastCorrection = null
         edit { c ->
             val before = c.getTextBeforeCursor(2, 0)
@@ -253,6 +297,17 @@ class Composer(private val svc: KeyboardService) {
         autoSpaced = false
         lastSpace = -1
         val c = ic ?: return
+        // Straight after a swipe, backspace removes the whole swiped word.
+        if (swiped && word.isNotEmpty()) {
+            swiped = false
+            word.setLength(0)
+            edit {
+                it.setComposingText("", 1)
+                it.finishComposingText()
+            }
+            svc.wordChanged()
+            return
+        }
         // Straight after an autocorrect: put the typed word back, and leave it alone from now on.
         lastCorrection?.let { lc ->
             lastCorrection = null

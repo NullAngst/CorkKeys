@@ -73,6 +73,11 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     private var lastCandidates: List<Candidate> = emptyList()
     private var lastAuto: String? = null
 
+    private var decoder: SwipeDecoder? = null
+    private var decoderKey = ""
+    private var trail: SwipeTrail? = null
+    private var swipeGen = 0
+
     override fun onCreate() {
         super.onCreate()
         prefs = Prefs.open(this)
@@ -99,6 +104,9 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         val area = FrameLayout(this)
         val kv = KeyboardView(this, this)
         kv.accessibility = KeyAccessibility(kv, this)
+        val tr = SwipeTrail(kv)
+        kv.trail = { tr.draw(it) }
+        trail = tr
         val p = EditingPanel(this, this).apply { visibility = View.GONE }
         val m = LanguageMenu(this, this).apply { visibility = View.GONE }
         area.addView(kv, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
@@ -325,6 +333,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         kv.spaceLabel = spaceLabel()
         kv.setLayout(layout, frame(), prefs.height, Mode.DOCKED, rows)
         syncPanelHeight()
+        prepareDecoder()
     }
 
     private fun spaceLabel(): String {
@@ -364,7 +373,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
 
     /** Languages whose lists the keyboard needs right now. None at all for a plain keyboard. */
     private fun wordLanguages(): List<String> =
-        if (prefs.suggestions) Languages.mixed(prefs.language, prefs.languages, mixing()) else emptyList()
+        if (prefs.suggestions || prefs.swipe) Languages.mixed(prefs.language, prefs.languages, mixing()) else emptyList()
 
     private fun loadWords() {
         val need = wordLanguages()
@@ -373,7 +382,9 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         Dictionaries.load(this, need) {
             main.post {
                 correctorKey = ""
+                decoderKey = ""
                 if (composer.word.isNotEmpty()) wordChanged()
+                prepareDecoder()
             }
         }
     }
@@ -402,6 +413,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         val s = strip ?: return
         val typed = composer.word.toString()
         val gen = ++suggestGen
+        if (composer.swiped) return
         if (typed.isEmpty() || !composing()) {
             lastWord = ""
             s.show(emptyList(), -1)
@@ -555,11 +567,66 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         updateShift()
     }
 
-    override fun swipeAllowed(): Boolean = false
+    // ---- Swipe ----
 
-    override fun swipeMoved(x: Float, y: Float) {}
+    private fun swipeOn(): Boolean = prefs.swipe && field.allowsSwipe && page == Page.BASE &&
+        (field.kind == FieldKind.TEXT)
 
-    override fun swiped(xs: FloatArray, ys: FloatArray) {}
+    /**
+     * The decoder for the keys on screen right now. Its index of words by first and last key is
+     * built on the word thread, so the first swipe after a layout change never waits for it.
+     */
+    private fun prepareDecoder() {
+        if (!swipeOn()) return
+        val plan = keys?.plan ?: return
+        val langs = wordLanguages()
+        val dicts = langs.mapNotNull { Dictionaries.get(it) }
+        if (dicts.isEmpty() || dicts[0].language != prefs.language) return
+        val key = langs.joinToString(",") + "|" + dicts.size + "|" + System.identityHashCode(plan)
+        if (key == decoderKey) return
+        decoderKey = key
+        val keyMap = KeyMap.of(baseLayout(), plan)
+        Dictionaries.onWorker {
+            val d = SwipeDecoder(dicts, keyMap)
+            main.post { if (decoderKey == key) decoder = d }
+        }
+    }
+
+    override fun swipeAllowed(): Boolean = swipeOn() && decoder != null
+
+    override fun swipeMoved(x: Float, y: Float) {
+        trail?.add(x, y)
+    }
+
+    override fun swiped(xs: FloatArray, ys: FloatArray) {
+        trail?.lift()
+        val d = decoder ?: return
+        val unit = keys?.plan?.unit ?: return
+        val kx = FloatArray(xs.size) { xs[it] / unit }
+        val ky = FloatArray(ys.size) { ys[it] / unit }
+        val gen = ++swipeGen
+        val swear = prefs.swearWords
+        val removed = RemovedWords.get(this).all().toSet()
+        val upper = shift.state
+        Dictionaries.onWorker {
+            val found = d.decode(kx, ky, 8).filter { it.word.lowercase() !in removed }
+            main.post {
+                if (gen != swipeGen || found.isEmpty()) return@post
+                fun cased(w: String) = when (upper) {
+                    Shift.State.LOCK -> w.map { Key.shiftText(it.toString()) }.joinToString("")
+                    Shift.State.ONE, Shift.State.AUTO -> Chars.capitalize(w)
+                    Shift.State.OFF -> w
+                }
+                // The word you swiped goes in whatever it is; only the alternatives follow the swear-word switch.
+                val best = found.first()
+                val alts = found.drop(1).filter { swear || !it.offensive }.take(SuggestionStrip.SLOTS - 1)
+                composer.swipe(cased(best.word))
+                if (upper != Shift.State.LOCK) shift.typed()
+                strip?.show((listOf(best) + alts).map { cased(it.word) }, 0)
+                updateShift()
+            }
+        }
+    }
 
     // ---- Accessibility ----
 
@@ -616,6 +683,10 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     override fun pastePressed() = Paste.paste(this, currentInputConnection)
 
     override fun picked(slot: Int, word: String) {
+        if (composer.swiped) {
+            composer.swapSwiped(word)
+            return
+        }
         composer.pick(word, slot)
         updateShift()
     }

@@ -141,4 +141,8 @@
     <string name="words_allow_all">Alle wieder vorschlagen</string>
     <string name="words_delete">Löschen</string>
     <string name="words_all_sure">Die ganze Liste löschen?</string>
+
+    <!-- Swipe -->
+    <string name="settings_swipe">Wischen zum Tippen</string>
+    <string name="settings_swipe_sub">Über die Buchstaben wischen und loslassen: das Wort wird eingefügt, Alternativen stehen in der Leiste. Löschen direkt danach entfernt das ganze Wort. Aus in Passwort-, E-Mail-, Adress- und Zahlenfeldern.</string>
 </resources>
