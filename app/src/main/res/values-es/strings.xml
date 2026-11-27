@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lang_en">Inglés (EE. UU.)</string>
+    <string name="lang_de">Alemán</string>
+    <string name="lang_es">Español</string>
+
+    <string name="theme_material">Material You</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+
+    <string name="space_incognito">incógnito</string>
+    <string name="menu_incognito_off">Incógnito: no</string>
+    <string name="menu_incognito_on">Incógnito: sí</string>
+
+    <string name="cd_tools">Herramientas</string>
+    <string name="cd_tools_close">Cerrar herramientas</string>
+    <string name="cd_paste">Pegar</string>
+    <string name="cd_edit">Panel de edición</string>
+    <string name="cd_settings">Ajustes</string>
+    <string name="cd_shift">Mayúsculas</string>
+    <string name="cd_shift_on">Mayúscula activada</string>
+    <string name="cd_caps_lock">Bloqueo de mayúsculas activado</string>
+    <string name="cd_backspace">Borrar</string>
+    <string name="cd_space">Espacio</string>
+    <string name="cd_enter">Intro</string>
+    <string name="cd_search">Buscar</string>
+    <string name="cd_send">Enviar</string>
+    <string name="cd_next">Siguiente</string>
+    <string name="cd_done">Hecho</string>
+    <string name="cd_go">Ir</string>
+    <string name="cd_previous">Anterior</string>
+    <string name="cd_symbols">Símbolos</string>
+    <string name="cd_more_symbols">Más símbolos</string>
+    <string name="cd_letters">Letras</string>
+    <string name="cd_comma">Coma</string>
+    <string name="cd_period">Punto</string>
+    <string name="cd_flip">Mover el teclado al otro lado</string>
+    <string name="cd_one_handed_off">Teclado a todo lo ancho</string>
+    <string name="cd_left">Izquierda</string>
+    <string name="cd_right">Derecha</string>
+    <string name="cd_up">Arriba</string>
+    <string name="cd_down">Abajo</string>
+
+    <string name="edit_home">Inicio</string>
+    <string name="edit_end">Fin</string>
+    <string name="edit_select">Seleccionar</string>
+    <string name="edit_select_all">Todo</string>
+    <string name="edit_cut">Cortar</string>
+    <string name="edit_copy">Copiar</string>
+    <string name="edit_paste">Pegar</string>
+    <string name="edit_close">ABC</string>
+
+    <string name="setup_title">Configurar CorkKeys</string>
+    <string name="setup_intro">Dos pasos: activar CorkKeys en los ajustes de teclado de Android y después cambiar a él.</string>
+    <string name="setup_step1">1. Activar el teclado</string>
+    <string name="setup_step1_sub">Android avisa de que un teclado puede recoger lo que escribes. CorkKeys no tiene acceso a internet y no guarda nada de lo que escribes salvo que tú lo actives.</string>
+    <string name="setup_step1_done">✓ CorkKeys está activado.</string>
+    <string name="setup_enable">Abrir ajustes de teclado</string>
+    <string name="setup_step2">2. Cambiar a él</string>
+    <string name="setup_step2_sub">Elige CorkKeys en la lista que muestra Android.</string>
+    <string name="setup_step2_done">✓ CorkKeys es tu teclado.</string>
+    <string name="setup_switch">Cambiar de teclado</string>
+    <string name="setup_try">Pruébalo</string>
+    <string name="setup_try_hint">Escribe algo aquí</string>
+    <string name="setup_open_settings">Abrir ajustes</string>
+
+    <string name="settings_title">Ajustes de CorkKeys</string>
+    <string name="settings_setup">Terminar la configuración</string>
+    <string name="settings_setup_sub">CorkKeys aún no está activado o no es tu teclado.</string>
+    <string name="settings_languages">Idiomas</string>
+    <string name="settings_languages_note">Mantén pulsada la barra espaciadora para cambiar entre los idiomas activados. ¿Necesitas otro idioma? Abre un issue en GitHub.</string>
+    <string name="settings_keys">Teclas</string>
+    <string name="settings_number_row">Fila de números</string>
+    <string name="settings_height">Altura del teclado</string>
+    <string name="height_short">Baja</string>
+    <string name="height_normal">Normal</string>
+    <string name="height_tall">Alta</string>
+    <string name="settings_bordered">Teclas con borde</string>
+    <string name="settings_bordered_sub">Desactívalo para teclas planas sin contorno.</string>
+    <string name="settings_bubbles">Burbuja de tecla</string>
+    <string name="settings_bubbles_sub">Muestra la tecla pulsada sobre el dedo. Nunca en campos de contraseña.</string>
+    <string name="settings_vibrate">Vibrar al pulsar</string>
+    <string name="settings_vibrate_sub">También sigue el ajuste de vibración del teclado de Android.</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_typing">Escritura</string>
+    <string name="settings_double_space">Punto con doble espacio</string>
+    <string name="settings_double_space_sub">Dos espacios rápidos tras una palabra ponen un punto y un espacio.</string>
+    <string name="settings_auto_caps">Mayúsculas automáticas</string>
+    <string name="settings_auto_caps_sub">Mayúscula al principio de cada frase, donde la app lo pide.</string>
+    <string name="settings_privacy">Privacidad</string>
+    <string name="settings_privacy_sub">Qué guarda CorkKeys y los interruptores para ello.</string>
+    <string name="settings_about">Acerca de</string>
+    <string name="about_licence">GPL-3.0</string>
+    <string name="about_source">Código fuente</string>
+    <string name="about_openboard">Inspirado en OpenBoard. Escrito desde cero: sin código de OpenBoard ni del teclado de AOSP.</string>
+
+    <string name="privacy_title">Privacidad</string>
+    <string name="privacy_intro">Un teclado ve cada contraseña y cada mensaje que escribes. CorkKeys está hecho para que nada de lo que escribes salga del teléfono y no se guarde nada salvo que lo actives aquí.</string>
+    <string name="privacy_switches">Desactivados hasta que los actives</string>
+    <string name="privacy_incognito">Incógnito</string>
+    <string name="privacy_incognito_sub">El aprendizaje queda desactivado en todas partes hasta que lo vuelvas a quitar. También en el menú al mantener pulsado el espacio; la barra espaciadora lo indica mientras está activo.</string>
+    <string name="privacy_facts">Lo que CorkKeys no puede hacer</string>
+    <string name="privacy_fact_network">No tiene permiso de internet, así que Android bloquea cualquier conexión de red que intente.</string>
+    <string name="privacy_fact_stored">Nada de lo que escribes se guarda en ningún sitio. La palabra que estás escribiendo vive en memoria hasta que entra en la app y después desaparece.</string>
+    <string name="privacy_fact_passwords">Los campos de contraseña no tienen sugerencias, autocorrección, deslizamiento, burbujas de tecla ni aprendizaje.</string>
+    <string name="privacy_fact_clipboard">El portapapeles solo se toca al pulsar Pegar y, normalmente, la app pega sin que el teclado vea el texto. Sin historial del portapapeles.</string>
+    <string name="privacy_fact_backup">Nada va a la copia de seguridad en la nube de Android ni a la transferencia entre dispositivos.</string>
+    <string name="privacy_fact_logs">Sin registros, sin informes de fallos, sin analíticas.</string>
+    <string name="privacy_permissions">Permisos</string>
+    <string name="privacy_permissions_none">Ninguno. CorkKeys no pide ningún permiso a Android.</string>
+    <string name="privacy_read_more">Leer las notas completas de privacidad</string>
+</resources>
