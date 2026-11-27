@@ -75,6 +75,9 @@ class SettingsActivity : Activity() {
                 build()
             })
         }
+        switch(R.string.settings_two_at_once, prefs.twoAtOnce, R.string.settings_two_at_once_sub, prefs.suggestions && on.size > 1) {
+            prefs.twoAtOnce = it
+        }
         add(Ui.note(this, pal, str(R.string.settings_languages_note)))
 
         // ---- Keys ----
@@ -101,6 +104,15 @@ class SettingsActivity : Activity() {
 
         // ---- Typing ----
         add(Ui.header(this, pal, str(R.string.settings_typing)))
+        switch(R.string.settings_suggestions, prefs.suggestions, R.string.settings_suggestions_sub) { prefs.suggestions = it }
+        switch(R.string.settings_autocorrect, prefs.autocorrect, R.string.settings_autocorrect_sub, prefs.suggestions) { prefs.autocorrect = it }
+        switch(R.string.settings_swear, prefs.swearWords, R.string.settings_swear_sub, prefs.suggestions) { prefs.swearWords = it }
+        switch(R.string.settings_no_suggest_fields, prefs.inNoSuggestFields, R.string.settings_no_suggest_fields_sub, prefs.suggestions) {
+            prefs.inNoSuggestFields = it
+        }
+        add(Ui.row(this, pal, str(R.string.words_title), str(R.string.settings_words_sub)) {
+            startActivity(Intent(this, WordListsActivity::class.java))
+        })
         switch(R.string.settings_double_space, prefs.doubleSpace, R.string.settings_double_space_sub) { prefs.doubleSpace = it }
         switch(R.string.settings_auto_caps, prefs.autoCaps, R.string.settings_auto_caps_sub) { prefs.autoCaps = it }
 
@@ -119,6 +131,8 @@ class SettingsActivity : Activity() {
         }
         add(Ui.row(this, pal, getString(R.string.app_name) + " " + version.orEmpty(), str(R.string.about_licence), null))
         add(Ui.row(this, pal, str(R.string.about_source), SOURCE_URL) { open(SOURCE_URL) })
+        add(Ui.row(this, pal, str(R.string.about_words), str(R.string.about_words_sub)) { open(LICENCE_URL) })
+        add(Ui.note(this, pal, str(R.string.settings_spell_checker_note)))
         add(Ui.note(this, pal, str(R.string.about_openboard)))
         list.addView(View(this), LinearLayout.LayoutParams(1, Ui.dp(this, 24f)))
         scroll.post { scroll.scrollTo(0, y) }
@@ -134,5 +148,6 @@ class SettingsActivity : Activity() {
     companion object {
         const val EXTRA_FROM_SETUP = "from_setup"
         const val SOURCE_URL = "https://github.com/NullAngst/CorkKeys"
+        const val LICENCE_URL = "https://creativecommons.org/licenses/by/4.0/"
     }
 }

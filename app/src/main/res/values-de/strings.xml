@@ -109,4 +109,36 @@
     <string name="privacy_permissions">Berechtigungen</string>
     <string name="privacy_permissions_none">Keine. CorkKeys fragt Android nach überhaupt keiner Berechtigung.</string>
     <string name="privacy_read_more">Die vollständigen Datenschutzhinweise lesen</string>
+
+    <!-- Suggestions, learned words, spell checker -->
+    <string name="settings_two_at_once">Zwei Sprachen gleichzeitig</string>
+    <string name="settings_two_at_once_sub">Mit Vorschlägen kommen Wörter aus jeder eingeschalteten Sprache, so kannst du sie in einem Satz mischen, ohne zu wechseln.</string>
+    <string name="settings_suggestions">Vorschläge</string>
+    <string name="settings_suggestions_sub">Drei Felder über den Tasten: was du getippt hast, der beste Tipp, der nächste. Einen Tipp lange drücken, um ihn nie wieder zu sehen.</string>
+    <string name="settings_autocorrect">Autokorrektur</string>
+    <string name="settings_autocorrect_sub">Ersetzt ein Wort, das nicht in der Liste steht, bei Leerzeichen oder Satzzeichen, wenn der beste Tipp klar besser ist. Löschen direkt danach holt dein Wort zurück.</string>
+    <string name="settings_swear">Schimpfwörter vorschlagen</string>
+    <string name="settings_swear_sub">Schimpfwörter und Beleidigungen werden nie in etwas anderes korrigiert. Das hier entscheidet nur, ob sie als Vorschläge erscheinen.</string>
+    <string name="settings_no_suggest_fields">Vorschläge in Feldern ohne Vorschläge</string>
+    <string name="settings_no_suggest_fields_sub">Manche Apps bitten die Tastatur, nichts vorzuschlagen. Nie in Passwortfeldern.</string>
+    <string name="settings_words_sub">Gelernte und entfernte Wörter ansehen und löschen.</string>
+    <string name="settings_spell_checker_note">CorkKeys kann auch die Rechtschreibprüfung von Android für andere Apps sein. Wähle es in den Android-Einstellungen unter System, Sprachen, Rechtschreibprüfung.</string>
+    <string name="about_words">Wortlisten</string>
+    <string name="about_words_sub">Aus der Leipzig Corpora Collection, über das aosp-dictionaries-Repository, unter CC BY 4.0.</string>
+    <string name="spell_checker_name">CorkKeys-Rechtschreibprüfung</string>
+    <string name="privacy_learn">Neue Wörter lernen</string>
+    <string name="privacy_learn_sub">Ein Wort, das in der Liste fehlt, wird gespeichert, sobald du es zweimal vollständig getippt hast. Nur das Wort: nichts darüber, was davor oder danach stand, wann oder wie oft. Nie in Passwort- oder Inkognitofeldern. Ausschalten löscht die gelernten Wörter.</string>
+    <string name="privacy_fact_removed">Wörter, die du aus den Vorschlägen entfernst, werden genauso gespeichert, nur das Wort, damit sie entfernt bleiben.</string>
+    <string name="privacy_fact_spell">Als Rechtschreibprüfung von Android antwortet CorkKeys nur; es speichert nichts und lernt nichts aus anderen Apps.</string>
+    <string name="words_title">Gelernte und entfernte Wörter</string>
+    <string name="words_learned">Gelernte Wörter</string>
+    <string name="words_learned_none">Keine.</string>
+    <string name="words_tap_forget">Tippen zum Vergessen</string>
+    <string name="words_forget_all">Alle gelernten Wörter vergessen</string>
+    <string name="words_removed">Aus Vorschlägen entfernt</string>
+    <string name="words_removed_none">Keine. Einen Vorschlag lange drücken, um ihn zu entfernen.</string>
+    <string name="words_tap_allow">Tippen, um es wieder vorzuschlagen</string>
+    <string name="words_allow_all">Alle wieder vorschlagen</string>
+    <string name="words_delete">Löschen</string>
+    <string name="words_all_sure">Die ganze Liste löschen?</string>
 </resources>
