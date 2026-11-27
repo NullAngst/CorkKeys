@@ -27,9 +27,9 @@ git -C "$work/src" sparse-checkout set wordlists wordlists_experimental
 commit=$(git -C "$work/src" rev-parse HEAD)
 printf '::notice title=aosp-dictionaries::commit %s\n' "$commit"
 
-# pick <folder> <name pattern>: the first matching .combined file, gzipped or not.
+# pick <name pattern>: the first matching .combined file, gzipped or not, in either folder.
 pick() {
-    find "$work/src/$1" -type f -iname "$2" | sort | head -n 1
+    find "$work/src/wordlists" "$work/src/wordlists_experimental" -type f -name "$1" | sort | head -n 1
 }
 
 convert() {
@@ -44,8 +44,8 @@ convert() {
     printf '::notice title=%s::%s from %s\n' "$lang" "$result" "${file#"$work/src/"}"
 }
 
-convert en "$(pick wordlists_experimental 'main_en_us*.combined*')"
-convert de "$(pick wordlists 'main_de.combined*')"
-convert es "$(pick wordlists_experimental 'main_es*.combined*')"
+convert en "$(pick 'main_en_US__experimental.combined*')"
+convert de "$(pick 'main_de.combined*')"
+convert es "$(pick 'main_es__experimental.combined*')"
 
 printf 'aosp-dictionaries commit %s\n' "$commit" > wordlists_source.txt
