@@ -129,7 +129,7 @@
     <string name="settings_suggestions">Suggestions</string>
     <string name="settings_suggestions_sub">Three slots above the keys: what you typed, the best guess, the next guess. Long-press a guess to never see it again.</string>
     <string name="settings_autocorrect">Autocorrect</string>
-    <string name="settings_autocorrect_sub">Swaps a word that isn't in the list on space or punctuation, when the best guess clearly beats it. Backspace straight after puts your word back.</string>
+    <string name="settings_autocorrect_sub">Swaps a word that isn\'t in the list on space or punctuation, when the best guess clearly beats it. Backspace straight after puts your word back.</string>
     <string name="settings_swear">Suggest swear words</string>
     <string name="settings_swear_sub">Swear words and slurs are never corrected into something else. This only decides whether they show up as suggestions.</string>
     <string name="settings_no_suggest_fields">Suggestions in no-suggestion fields</string>
