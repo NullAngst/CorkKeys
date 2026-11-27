@@ -1,0 +1,39 @@
+# Swear words and slurs the source list misses or does not mark. They are real words: autocorrect
+# leaves them exactly as typed, and the strip shows them only with the swear-word switch on.
+# Same columns as the main list: word, frequency (used only for words the list lacks), flag.
+Scheiße	60	o
+scheiße	60	o
+Scheiß	60	o
+scheiß	60	o
+Scheißkerl	60	o
+beschissen	60	o
+Arsch	60	o
+Arschloch	60	o
+Arschlöcher	60	o
+ficken	60	o
+fick	60	o
+fickt	60	o
+gefickt	60	o
+Fotze	60	o
+Fotzen	60	o
+Hure	60	o
+Huren	60	o
+Hurensohn	60	o
+Hurensöhne	60	o
+Wichser	60	o
+verdammt	60	o
+Schlampe	60	o
+Schlampen	60	o
+Schwuchtel	60	o
+Schwuchteln	60	o
+Neger	60	o
+Kanake	60	o
+Kanaken	60	o
+Missgeburt	60	o
+Pisser	60	o
+Kacke	60	o
+kacke	60	o
+Spast	60	o
+Spasti	60	o
+Penner	60	o
+Drecksau	60	o
