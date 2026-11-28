@@ -12,6 +12,7 @@
 * Word lists load whether the APK holds them gzipped or unpacked: on a device they never loaded, which left suggestions, autocorrect, swipe and the spell checker empty
 * A word list that fails to load is named in settings instead of failing silently
 * Settings screens scroll a focused field back into view when the keyboard opens, so the setup screen's test field isn't hidden in landscape
+* Screenshots in the README, from the device test
 * Memory measured on Android 15 and written into maintenance.md, along with the device test on the devtest branch
 * Full README, PRIVACY.md, maintenance.md and this file
 

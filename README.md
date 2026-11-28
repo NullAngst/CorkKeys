@@ -27,6 +27,30 @@ A new install is a plain keyboard. Suggestions, autocorrect, swipe and learned w
 
 Left out on purpose: emoji, GIF and sticker search, clipboard history, next-word prediction, cloud sync, online spell check, built-in voice typing, analytics, crash reporting, ads.
 
+## Screenshots
+
+Taken by the device test on an Android 15 emulator.
+
+| Suggestions, autocorrect pick in bold | Long-press: symbol first, then accents | Symbols |
+|---|---|---|
+| <img src="docs/screenshots/suggestions.png" width="270" alt="Suggestion strip showing teh, the and thee"> | <img src="docs/screenshots/long-press.png" width="270" alt="Long-press popup on e with the pipe symbol and accented e's"> | <img src="docs/screenshots/symbols.png" width="270" alt="The first symbols page"> |
+
+| German, ü ö ä on the main layer | Tools row | One-handed |
+|---|---|---|
+| <img src="docs/screenshots/german.png" width="270" alt="German QWERTZ layout"> | <img src="docs/screenshots/tools-row.png" width="270" alt="Tools row with editing panel, one-handed, floating and settings buttons"> | <img src="docs/screenshots/one-handed.png" width="270" alt="One-handed keyboard on the right with flip and back buttons"> |
+
+| Floating | Landscape |
+|---|---|
+| <img src="docs/screenshots/floating.png" width="270" alt="Floating keyboard with a drag handle over an app"> | <img src="docs/screenshots/landscape.png" width="450" alt="Landscape keyboard clear of the camera cutout"> |
+
+Themes: Verdigris, Kawaii Light, Kawaii Dark, Dark with flat keys, Material You.
+
+<img src="docs/screenshots/theme-verdigris.png" width="180" alt="Verdigris theme"> <img src="docs/screenshots/theme-kawaii-light.png" width="180" alt="Kawaii Light theme"> <img src="docs/screenshots/theme-kawaii-dark.png" width="180" alt="Kawaii Dark theme"> <img src="docs/screenshots/theme-dark-flat.png" width="180" alt="Dark theme with flat keys"> <img src="docs/screenshots/theme-material.png" width="180" alt="Material You theme">
+
+| Settings | Privacy page |
+|---|---|
+| <img src="docs/screenshots/settings.png" width="240" alt="Settings screen"> | <img src="docs/screenshots/privacy.png" width="240" alt="Privacy page"> |
+
 ## Privacy, in short
 
 CorkKeys asks Android for no permissions at all. Without INTERNET, Android refuses every network connection it could try to make. Nothing you type is written anywhere unless you turn on learned words, and then only the words themselves are kept. CI fails the build if a permission, a logging call, or clipboard use outside `Paste.kt` ever shows up. The full notes are in [PRIVACY.md](PRIVACY.md).
