@@ -127,6 +127,13 @@ open_field() {
     dump setup
     xy=$(python3 "$ui" field "$out/setup.xml")
     if [ -z "$xy" ]; then
+        # Landscape: the field is below the fold. Scroll the setup screen up and look again.
+        adb shell input swipe 500 700 500 100 300
+        sleep 1
+        dump setup
+        xy=$(python3 "$ui" field "$out/setup.xml")
+    fi
+    if [ -z "$xy" ]; then
         log "no text field on the setup screen"
         return 1
     fi
@@ -172,6 +179,27 @@ widths() {
     fi
 }
 
+# wait_for <name> <description> <seconds>: polls the keyboard until a node with that exact
+# description shows (a suggestion in the strip, say). Logs how long it took.
+wait_for() {
+    start=$(date +%s)
+    while :; do
+        dump "$1"
+        if python3 "$ui" keys "$out/$1.xml" "$pkg" | awk -F '\t' -v d="$2" '$1 == d { f = 1 } END { exit !f }'; then
+            log "$1: [$2] showed after $(($(date +%s) - start)) s"
+            pass "$1"
+            return 0
+        fi
+        if [ $(($(date +%s) - start)) -ge "$3" ]; then
+            fail "$1" "[$2] never showed in $3 s"
+            return 1
+        fi
+        sleep 3
+    done
+}
+
+heap() { adb shell dumpsys meminfo "$pkg" | awk '/Dalvik Heap/ && !h { h = $0 } /TOTAL PSS/ && !t { t = $0 } END { print h " | " t }' | tr -s ' '; }
+
 clip_ops() { adb shell cmd appops get "$pkg" READ_CLIPBOARD 2>&1 | tr -s ' \n' ' '; }
 
 # ---- Setup ----
@@ -207,14 +235,6 @@ type_text "hi  "
 check "double-space period" "hi. " "$(field_text)"
 clear_field
 
-before=$(clip_ops)
-log "clipboard app-ops before Paste: $before"
-tap_key "Paste" || true
-sleep 1
-after=$(clip_ops)
-log "clipboard app-ops after Paste: $after"
-check "no clipboard read when Paste is handled by the app" "$before" "$after"
-clear_field
 
 tap_key "Symbols" || true
 sleep 1
@@ -241,11 +261,14 @@ clear_field
 
 # ---- 2. Suggestions and autocorrect ----
 
+log "memory, plain keyboard: $(heap)"
 prefs suggestions=true autocorrect=true
 open_field
 read_keys 05-suggestions
 type_text "teh"
+wait_for 05-suggestion-shows "the" 90
 shot 05-suggestions-teh
+log "memory, English list loaded: $(heap)"
 type_text " "
 check "autocorrect teh" "the " "$(field_text)"
 tap_key "Delete" || true
@@ -258,8 +281,11 @@ clear_field
 prefs suggestions=true swipe=true
 open_field
 read_keys 06-swipe
-# The word lists load in the background the first time; give them a moment.
-sleep 4
+# The word lists load in the background the first time, and the swipe index after them.
+type_text "helo"
+wait_for 06-lists-ready "hello" 90
+clear_field
+sleep 8
 swipe_word "hello"
 shot 06-swipe-hello
 got=$(field_text)
@@ -273,11 +299,15 @@ clear_field
 
 # ---- 4. German layout ----
 
-prefs languages=en,de current=de
+prefs languages=en,de current=de suggestions=true
 open_field
 shot 07-german
 read_keys 07-german
 if [ -n "$(key_xy "ü")" ] && [ -n "$(key_xy "ä")" ]; then pass "German layout has ü and ä"; else fail "German layout has ü and ä" "missing"; fi
+type_text "schoen"
+wait_for 07-german-suggestion "schön" 120
+log "memory, English and German lists loaded: $(heap)"
+clear_field
 
 # ---- 5. Modes ----
 
@@ -319,7 +349,34 @@ widths "three-button navigation"
 adb shell cmd overlay enable com.android.internal.systemui.navbar.gestural >/dev/null 2>&1 || true
 sleep 2
 
-# ---- 7. Themes ----
+# ---- 7. Clipboard, in another app's field ----
+
+adb shell am start -W -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact >/dev/null 2>&1 || true
+sleep 4
+dump contacts
+xy=$(python3 "$ui" field "$out/contacts.xml")
+if [ -n "$xy" ]; then
+    # shellcheck disable=SC2086
+    adb shell input tap $xy
+    sleep 3
+    read_keys contacts-keys
+    shot 16-contacts
+    before=$(clip_ops)
+    log "clipboard app-ops before Paste: $before"
+    tap_key "Paste" || true
+    sleep 2
+    after=$(clip_ops)
+    log "clipboard app-ops after Paste: $after"
+    check "Paste in another app reads no clipboard" "$before" "$after"
+    tap_key "Tools" || true
+    sleep 1
+    shot 17-tools-row
+    adb shell input keyevent KEYCODE_BACK
+else
+    log "no Contacts field; clipboard check skipped"
+fi
+
+# ---- 8. Themes ----
 
 for t in light dark verdigris kawaii_light kawaii_dark material; do
     prefs theme="$t"
@@ -330,7 +387,7 @@ prefs theme=dark bordered=false
 open_field
 shot 13-theme-dark-flat
 
-# ---- 8. Pages ----
+# ---- 9. Pages ----
 
 adb shell am start -W -n "$pkg/io.github.nullangst.corkkeys.SettingsActivity" >/dev/null
 sleep 2
