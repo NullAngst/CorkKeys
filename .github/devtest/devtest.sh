@@ -113,6 +113,7 @@ prefs() {
             v=${kv#*=}
             case "$v" in
                 true | false) printf '    <boolean name="%s" value="%s" />\n' "$k" "$v" ;;
+                *[0-9].[0-9]*) printf '    <float name="%s" value="%s" />\n' "$k" "$v" ;;
                 *) printf '    <string name="%s">%s</string>\n' "$k" "$v" ;;
             esac
         done
@@ -351,6 +352,17 @@ widths_floating=$(awk -F '\t' 'length($1) == 1 && $1 ~ /[a-z]/ { if (min == "" |
 log "floating keys span $widths_floating px"
 type_text "float"
 check "typing on the floating keyboard" "float" "$(field_text)"
+clear_field
+
+prefs height=TALLER
+open_field
+shot 09b-height-taller
+prefs height=CUSTOM custom_row_dp=84.0
+open_field
+shot 09c-height-custom-84
+read_keys 09c-height-custom
+type_text "tall"
+check "typing on a custom-height keyboard" "tall" "$(field_text)"
 clear_field
 
 # ---- 6. Landscape and navigation ----
