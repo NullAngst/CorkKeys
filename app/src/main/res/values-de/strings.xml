@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lang_en">Englisch (USA)</string>
+    <string name="lang_de">Deutsch</string>
+    <string name="lang_es">Spanisch</string>
+
+    <string name="theme_material">Material You</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+
+    <string name="space_incognito">inkognito</string>
+    <string name="menu_incognito_off">Inkognito: aus</string>
+    <string name="menu_incognito_on">Inkognito: an</string>
+
+    <string name="cd_tools">Werkzeuge</string>
+    <string name="cd_tools_close">Werkzeuge schließen</string>
+    <string name="cd_paste">Einfügen</string>
+    <string name="cd_edit">Bearbeitungsfeld</string>
+    <string name="cd_settings">Einstellungen</string>
+    <string name="cd_shift">Umschalt</string>
+    <string name="cd_shift_on">Umschalt an</string>
+    <string name="cd_caps_lock">Feststelltaste an</string>
+    <string name="cd_backspace">Löschen</string>
+    <string name="cd_space">Leertaste</string>
+    <string name="cd_enter">Eingabe</string>
+    <string name="cd_search">Suchen</string>
+    <string name="cd_send">Senden</string>
+    <string name="cd_next">Weiter</string>
+    <string name="cd_done">Fertig</string>
+    <string name="cd_go">Los</string>
+    <string name="cd_previous">Zurück</string>
+    <string name="cd_symbols">Symbole</string>
+    <string name="cd_more_symbols">Weitere Symbole</string>
+    <string name="cd_letters">Buchstaben</string>
+    <string name="cd_comma">Komma</string>
+    <string name="cd_period">Punkt</string>
+    <string name="cd_flip">Tastatur auf die andere Seite</string>
+    <string name="cd_one_handed_off">Tastatur in voller Breite</string>
+    <string name="cd_left">Links</string>
+    <string name="cd_right">Rechts</string>
+    <string name="cd_up">Hoch</string>
+    <string name="cd_down">Runter</string>
+
+    <string name="edit_home">Anfang</string>
+    <string name="edit_end">Ende</string>
+    <string name="edit_select">Auswählen</string>
+    <string name="edit_select_all">Alles</string>
+    <string name="edit_cut">Ausschneiden</string>
+    <string name="edit_copy">Kopieren</string>
+    <string name="edit_paste">Einfügen</string>
+    <string name="edit_close">ABC</string>
+
+    <string name="setup_title">CorkKeys einrichten</string>
+    <string name="setup_intro">Zwei Schritte: CorkKeys in den Tastatureinstellungen von Android aktivieren, dann dorthin wechseln.</string>
+    <string name="setup_step1">1. Tastatur aktivieren</string>
+    <string name="setup_step1_sub">Android warnt, dass eine Tastatur alles Getippte erfassen kann. CorkKeys hat keinen Internetzugriff und speichert nichts, was du tippst, solange du das nicht einschaltest.</string>
+    <string name="setup_step1_done">✓ CorkKeys ist aktiviert.</string>
+    <string name="setup_enable">Tastatureinstellungen öffnen</string>
+    <string name="setup_step2">2. Dorthin wechseln</string>
+    <string name="setup_step2_sub">Wähle CorkKeys in der Liste, die Android zeigt.</string>
+    <string name="setup_step2_done">✓ CorkKeys ist deine Tastatur.</string>
+    <string name="setup_switch">Tastatur wechseln</string>
+    <string name="setup_try">Ausprobieren</string>
+    <string name="setup_try_hint">Hier etwas tippen</string>
+    <string name="setup_open_settings">Einstellungen öffnen</string>
+
+    <string name="settings_title">CorkKeys-Einstellungen</string>
+    <string name="settings_setup">Einrichtung abschließen</string>
+    <string name="settings_setup_sub">CorkKeys ist noch nicht aktiviert oder nicht deine Tastatur.</string>
+    <string name="settings_languages">Sprachen</string>
+    <string name="settings_languages_note">Leertaste lange drücken, um zwischen den eingeschalteten Sprachen zu wechseln. Du brauchst eine andere Sprache? Öffne ein Issue auf GitHub.</string>
+    <string name="settings_keys">Tasten</string>
+    <string name="settings_number_row">Zahlenreihe</string>
+    <string name="settings_height">Tastaturhöhe</string>
+    <string name="height_short">Niedrig</string>
+    <string name="height_normal">Normal</string>
+    <string name="height_tall">Hoch</string>
+    <string name="settings_bordered">Tasten mit Rand</string>
+    <string name="settings_bordered_sub">Aus für flache Tasten ohne Umriss.</string>
+    <string name="settings_bubbles">Tastenblase</string>
+    <string name="settings_bubbles_sub">Zeigt die gedrückte Taste über dem Finger. Nie in Passwortfeldern.</string>
+    <string name="settings_vibrate">Vibration bei Tastendruck</string>
+    <string name="settings_vibrate_sub">Folgt auch der Tastaturvibration in den Android-Einstellungen.</string>
+    <string name="settings_theme">Design</string>
+    <string name="settings_typing">Tippen</string>
+    <string name="settings_double_space">Punkt durch doppeltes Leerzeichen</string>
+    <string name="settings_double_space_sub">Zwei schnelle Leerzeichen nach einem Wort ergeben Punkt und Leerzeichen.</string>
+    <string name="settings_auto_caps">Automatische Großschreibung</string>
+    <string name="settings_auto_caps_sub">Ein Großbuchstabe am Satzanfang, wo die App das verlangt.</string>
+    <string name="settings_privacy">Datenschutz</string>
+    <string name="settings_privacy_sub">Was CorkKeys speichert, und die Schalter dafür.</string>
+    <string name="settings_about">Über</string>
+    <string name="about_licence">GPL-3.0</string>
+    <string name="about_source">Quellcode</string>
+    <string name="about_openboard">Inspiriert von OpenBoard. Komplett neu geschrieben: kein Code von OpenBoard oder der AOSP-Tastatur.</string>
+
+    <string name="privacy_title">Datenschutz</string>
+    <string name="privacy_intro">Eine Tastatur sieht jedes Passwort und jede Nachricht, die du tippst. CorkKeys ist so gebaut, dass nichts Getipptes das Telefon verlässt und nichts gespeichert wird, solange du es hier nicht einschaltest.</string>
+    <string name="privacy_switches">Aus, bis du sie einschaltest</string>
+    <string name="privacy_incognito">Inkognito</string>
+    <string name="privacy_incognito_sub">Lernen bleibt überall aus, bis du das wieder ausschaltest. Auch im Menü der lang gedrückten Leertaste; die Leertaste zeigt es an, solange es an ist.</string>
+    <string name="privacy_facts">Was CorkKeys nicht kann</string>
+    <string name="privacy_fact_network">Es hat keine Internetberechtigung, also blockiert Android jede Netzwerkverbindung, die es versuchen könnte.</string>
+    <string name="privacy_fact_stored">Nichts Getipptes wird irgendwo gespeichert. Das Wort, das du gerade tippst, liegt im Arbeitsspeicher, bis es in der App ist, dann ist es weg.</string>
+    <string name="privacy_fact_passwords">Passwortfelder bekommen keine Vorschläge, keine Autokorrektur, kein Wischen, keine Tastenblasen und kein Lernen.</string>
+    <string name="privacy_fact_clipboard">Die Zwischenablage wird nur berührt, wenn du Einfügen drückst, und normalerweise fügt die App ein, ohne dass die Tastatur den Text sieht. Kein Verlauf der Zwischenablage.</string>
+    <string name="privacy_fact_backup">Nichts landet in der Cloud-Sicherung von Android oder in der Übertragung auf ein anderes Gerät.</string>
+    <string name="privacy_fact_logs">Keine Protokolle, kein Absturzbericht, keine Analyse.</string>
+    <string name="privacy_permissions">Berechtigungen</string>
+    <string name="privacy_permissions_none">Keine. CorkKeys fragt Android nach überhaupt keiner Berechtigung.</string>
+    <string name="privacy_read_more">Die vollständigen Datenschutzhinweise lesen</string>
+</resources>
