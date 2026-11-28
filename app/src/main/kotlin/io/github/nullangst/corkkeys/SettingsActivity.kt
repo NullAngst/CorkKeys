@@ -117,6 +117,24 @@ class SettingsActivity : Activity() {
         switch(R.string.settings_double_space, prefs.doubleSpace, R.string.settings_double_space_sub) { prefs.doubleSpace = it }
         switch(R.string.settings_auto_caps, prefs.autoCaps, R.string.settings_auto_caps_sub) { prefs.autoCaps = it }
 
+        // ---- Voice ----
+        add(Ui.header(this, pal, str(R.string.settings_voice)))
+        val voices = VoiceHandoff.keyboards(this)
+        val picked = VoiceHandoff.picked(this, prefs.voiceIme)
+        add(Ui.row(this, pal, str(R.string.settings_voice_keyboard), picked?.label ?: str(R.string.settings_voice_none)) {
+            if (voices.isEmpty()) {
+                android.widget.Toast.makeText(this, R.string.settings_voice_empty, android.widget.Toast.LENGTH_LONG).show()
+                return@row
+            }
+            val names = listOf(str(R.string.settings_voice_none)) + voices.map { it.label }
+            val current = voices.indexOfFirst { it.id == picked?.id } + 1
+            Ui.choose(this, pal, str(R.string.settings_voice_keyboard), names, current) {
+                prefs.voiceIme = if (it == 0) "" else voices[it - 1].id
+                build()
+            }
+        })
+        add(Ui.note(this, pal, str(R.string.settings_voice_sub)))
+
         // ---- Privacy ----
         add(Ui.header(this, pal, str(R.string.settings_privacy)))
         add(Ui.row(this, pal, str(R.string.privacy_title), str(R.string.settings_privacy_sub)) {

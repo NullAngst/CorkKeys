@@ -145,4 +145,16 @@
     <!-- Swipe -->
     <string name="settings_swipe">Wischen zum Tippen</string>
     <string name="settings_swipe_sub">Über die Buchstaben wischen und loslassen: das Wort wird eingefügt, Alternativen stehen in der Leiste. Löschen direkt danach entfernt das ganze Wort. Aus in Passwort-, E-Mail-, Adress- und Zahlenfeldern.</string>
+
+    <!-- One-handed, floating, voice -->
+    <string name="cd_one_handed">Einhandmodus</string>
+    <string name="cd_floating">Schwebende Tastatur</string>
+    <string name="cd_voice">Spracheingabe-Tastatur</string>
+    <string name="cd_dock">Tastatur andocken</string>
+    <string name="cd_grip">Ziehen, um die Tastatur zu verschieben</string>
+    <string name="settings_voice">Spracheingabe</string>
+    <string name="settings_voice_keyboard">Tastatur für Spracheingabe</string>
+    <string name="settings_voice_none">Keine</string>
+    <string name="settings_voice_sub">Wähle eine deiner anderen Tastaturen, und in der Werkzeugleiste erscheint ein Mikrofon, das zu ihr wechselt. CorkKeys hat keinen eigenen Sprachcode.</string>
+    <string name="settings_voice_empty">Keine andere Tastatur ist aktiviert. Aktiviere zuerst eine in den Tastatureinstellungen von Android.</string>
 </resources>

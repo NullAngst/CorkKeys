@@ -35,7 +35,7 @@ import android.widget.LinearLayout
  * ([onComputeInsets]); everything else goes straight to the app.
  */
 class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, ToolsRow.Host,
-    EditingPanel.Host, LanguageMenu.Host, KeyAccessibility.Host {
+    EditingPanel.Host, LanguageMenu.Host, KeyAccessibility.Host, FloatingKeyboard.Host {
 
     lateinit var prefs: Prefs
         private set
@@ -58,8 +58,10 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     private var tools: ToolsRow? = null
     private var panel: EditingPanel? = null
     private var menu: LanguageMenu? = null
+    private var floater: FloatingKeyboard? = null
 
     private var insetLeft = 0
+    private var insetTop = 0
     private var insetRight = 0
     private var insetBottom = 0
 
@@ -113,9 +115,14 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         area.addView(p, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0))
         area.addView(m, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         val stripH = (SuggestionStrip.HEIGHT_DP * resources.displayMetrics.density).toInt()
+        val fk = FloatingKeyboard(this, this).apply {
+            target = c
+            visibility = View.GONE
+        }
+        c.addView(fk, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         c.addView(s, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, stripH))
         c.addView(area, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        r.addView(c, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM))
+        r.addView(c, FloatingKeyboard.dockedParams())
         val overlay = KeyboardView.Overlay(this, kv)
         kv.overlay = overlay
         r.addView(overlay, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -132,6 +139,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         tools = t
         panel = p
         menu = m
+        floater = fk
         applyPalette()
         return r
     }
@@ -140,11 +148,14 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val i = wi.getInsets(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
             insetLeft = i.left
+            insetTop = i.top
             insetRight = i.right
             insetBottom = i.bottom
         } else {
             @Suppress("DEPRECATION")
             insetLeft = wi.systemWindowInsetLeft
+            @Suppress("DEPRECATION")
+            insetTop = wi.systemWindowInsetTop
             @Suppress("DEPRECATION")
             insetRight = wi.systemWindowInsetRight
             @Suppress("DEPRECATION")
@@ -215,8 +226,45 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     private fun applyFrame() {
         val f = frame()
         keys?.setFrame(f)
-        strip?.setPadding(insetLeft, 0, insetRight, 0)
+        applyMode()
         syncPanelHeight()
+    }
+
+    private fun mode(): Mode = prefs.mode
+
+    /**
+     * Docked or floating: docked, the keyboard runs along the bottom, full width, padded clear
+     * of the system bars; floating, it is a smaller block with a drag handle, kept inside them.
+     */
+    private fun applyMode() {
+        val c = container ?: return
+        val r = root ?: return
+        val fk = floater ?: return
+        val floating = mode() == Mode.FLOATING
+        if (floating) {
+            strip?.setPadding(0, 0, 0, 0)
+            fk.visibility = View.VISIBLE
+            val f = frame()
+            val w = Geometry.floatingWidth(f).toInt()
+            val lp = c.layoutParams as FrameLayout.LayoutParams
+            if (lp.width != w || lp.gravity != (Gravity.TOP or Gravity.START)) {
+                lp.width = w
+                lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                lp.gravity = Gravity.TOP or Gravity.START
+                c.layoutParams = lp
+            }
+            val rw = if (r.width > 0) r.width else f.windowWidth
+            val rh = if (r.height > 0) r.height else f.windowHeight
+            fk.safe.set(insetLeft, insetTop, rw - insetRight, rh - insetBottom)
+            fk.place(prefs.floatX, prefs.floatY)
+        } else {
+            strip?.setPadding(insetLeft, 0, insetRight, 0)
+            fk.visibility = View.GONE
+            val lp = c.layoutParams as FrameLayout.LayoutParams
+            if (lp.width != ViewGroup.LayoutParams.MATCH_PARENT || lp.gravity != Gravity.BOTTOM || lp.topMargin != 0) {
+                c.layoutParams = FloatingKeyboard.dockedParams()
+            }
+        }
     }
 
     private fun syncPanelHeight() {
@@ -229,7 +277,9 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
                 lp.height = h
                 p.layoutParams = lp
             }
-            p.setPadding(insetLeft, p.paddingTop, insetRight, insetBottom + (3 * resources.displayMetrics.density).toInt())
+            val pad = (3 * resources.displayMetrics.density).toInt()
+            if (mode() == Mode.FLOATING) p.setPadding(0, p.paddingTop, 0, pad)
+            else p.setPadding(insetLeft, p.paddingTop, insetRight, insetBottom + pad)
         }
     }
 
@@ -238,7 +288,8 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         val r = root ?: return
         val c = container ?: return
         if (r.height == 0 || c.height == 0) return
-        val top = c.top
+        // Floating, the app keeps the whole screen: it is told the keyboard takes no space.
+        val top = if (mode() == Mode.FLOATING) r.height else c.top
         outInsets.contentTopInsets = top
         outInsets.visibleTopInsets = top
         outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION
@@ -309,6 +360,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         strip?.applyPalette(pal)
         tools?.applyPalette(pal)
         panel?.applyPalette(pal)
+        floater?.applyPalette(pal)
         container?.setBackgroundColor(pal.keyboardBg)
         keys?.invalidate()
     }
@@ -331,7 +383,8 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         }
         kv.enter = field.enter
         kv.spaceLabel = spaceLabel()
-        kv.setLayout(layout, frame(), prefs.height, Mode.DOCKED, rows)
+        kv.setLayout(layout, frame(), prefs.height, mode(), rows)
+        applyMode()
         syncPanelHeight()
         prepareDecoder()
     }
@@ -515,7 +568,14 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
             Kind.SYMBOLS -> toPage(Page.SYMBOLS)
             Kind.SYMBOLS_MORE -> toPage(Page.SYMBOLS_MORE)
             Kind.LETTERS -> toPage(Page.BASE)
-            Kind.ONE_HANDED_FLIP, Kind.ONE_HANDED_EXIT -> {}
+            Kind.ONE_HANDED_FLIP -> {
+                OneHanded.flip(prefs)
+                showLayout()
+            }
+            Kind.ONE_HANDED_EXIT -> {
+                OneHanded.set(prefs, Mode.DOCKED)
+                showLayout()
+            }
         }
         updateShift()
     }
@@ -677,6 +737,8 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
 
     override fun toolsPressed() {
         val s = strip ?: return
+        // The mic only exists once a voice keyboard is picked, and only while it is still enabled.
+        tools?.setShown(ToolsRow.Tool.VOICE, VoiceHandoff.picked(this, prefs.voiceIme) != null)
         s.setToolsOpen(!s.toolsOpen)
     }
 
@@ -704,6 +766,19 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         when (t) {
             ToolsRow.Tool.EDIT -> openEditing()
             ToolsRow.Tool.SETTINGS -> openSettings()
+            ToolsRow.Tool.ONE_HANDED -> {
+                OneHanded.toggle(prefs)
+                showLayout()
+            }
+            ToolsRow.Tool.FLOATING -> {
+                OneHanded.set(prefs, if (mode() == Mode.FLOATING) Mode.DOCKED else Mode.FLOATING)
+                showLayout()
+            }
+            ToolsRow.Tool.VOICE -> {
+                strip?.setToolsOpen(false)
+                if (!VoiceHandoff.switchTo(this, prefs.voiceIme)) prefs.voiceIme = ""
+                return
+            }
         }
         strip?.setToolsOpen(false)
     }
@@ -777,6 +852,19 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         } catch (_: Exception) {
         }
         requestHideSelf(0)
+    }
+
+    // ---- Floating ----
+
+    override fun floatMoved(fx: Float, fy: Float) {
+        prefs.floatX = fx
+        prefs.floatY = fy
+    }
+
+    override fun dockPressed() {
+        keys?.let { Haptics.key(it, prefs.vibrate) }
+        OneHanded.set(prefs, Mode.DOCKED)
+        showLayout()
     }
 
     companion object {

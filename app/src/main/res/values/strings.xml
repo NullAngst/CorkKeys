@@ -158,4 +158,16 @@
     <!-- Swipe -->
     <string name="settings_swipe">Swipe typing</string>
     <string name="settings_swipe_sub">Slide across the letters and lift: the word goes in, with alternatives in the strip. Backspace straight after removes the whole word. Off in password, email, address and number fields.</string>
+
+    <!-- One-handed, floating, voice -->
+    <string name="cd_one_handed">One-handed mode</string>
+    <string name="cd_floating">Floating keyboard</string>
+    <string name="cd_voice">Voice keyboard</string>
+    <string name="cd_dock">Dock the keyboard</string>
+    <string name="cd_grip">Drag to move the keyboard</string>
+    <string name="settings_voice">Voice typing</string>
+    <string name="settings_voice_keyboard">Voice keyboard</string>
+    <string name="settings_voice_none">None</string>
+    <string name="settings_voice_sub">Pick one of your other keyboards and a mic button shows in the tools row that switches to it. CorkKeys has no voice code of its own.</string>
+    <string name="settings_voice_empty">No other keyboard is enabled. Enable one in Android\'s keyboard settings first.</string>
 </resources>
