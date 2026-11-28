@@ -83,6 +83,7 @@ class SettingsActivity : Activity() {
         // ---- Keys ----
         add(Ui.header(this, pal, str(R.string.settings_keys)))
         switch(R.string.settings_number_row, prefs.numberRow) { prefs.numberRow = it }
+        switch(R.string.settings_emoji_comma, prefs.emojiComma, R.string.settings_emoji_comma_sub) { prefs.emojiComma = it }
         val heights = KeyHeight.entries
         val heightNames = listOf(str(R.string.height_short), str(R.string.height_normal), str(R.string.height_tall), str(R.string.height_taller), str(R.string.height_custom))
         val heightNow = if (prefs.customHeight) getString(R.string.height_custom_value, prefs.rowDp.toInt()) else heightNames[heights.indexOf(prefs.height)]

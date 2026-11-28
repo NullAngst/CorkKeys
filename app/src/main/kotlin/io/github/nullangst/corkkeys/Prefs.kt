@@ -81,6 +81,15 @@ class Prefs(val kv: KeyValues, systemLanguage: String = "en") {
 
     // Privacy page
     var learn by bool("learn", false)
+    var clipHistory by bool("clip_history", false)
+    private var clipKeepRaw by str("clip_keep", "5")
+
+    /** How many of the newest unpinned clips are saved for after a restart. Pinned ones always are. */
+    var clipKeep: Int
+        get() = clipKeepRaw.toIntOrNull()?.coerceIn(0, CLIP_KEEP_MAX) ?: 5
+        set(v) {
+            clipKeepRaw = v.coerceIn(0, CLIP_KEEP_MAX).toString()
+        }
     var incognito by bool("incognito", false)
 
     // Languages: a comma-separated list of codes, and the one in use.
@@ -90,6 +99,7 @@ class Prefs(val kv: KeyValues, systemLanguage: String = "en") {
 
     // Keys and feel
     var numberRow by bool("number_row", false)
+    var emojiComma by bool("emoji_comma", true)
     var vibrate by bool("vibrate", true)
     var bubbles by bool("bubbles", true)
     var bordered by bool("bordered", true)
@@ -139,6 +149,7 @@ class Prefs(val kv: KeyValues, systemLanguage: String = "en") {
 
     companion object {
         const val CUSTOM = "CUSTOM"
+        const val CLIP_KEEP_MAX = 50
         private const val FILE = "settings"
 
         fun open(ctx: Context): Prefs {

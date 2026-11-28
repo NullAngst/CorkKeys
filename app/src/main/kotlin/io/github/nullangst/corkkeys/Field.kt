@@ -55,11 +55,11 @@ class FieldInfo(
 
 object Field {
     /** The layout a field opens with: the pads for numbers, dates, times and phone numbers, letters for the rest. */
-    fun layoutFor(kind: FieldKind, language: String, numberRow: Boolean): Layout = when (kind) {
+    fun layoutFor(kind: FieldKind, language: String, numberRow: Boolean, emojiComma: Boolean = true): Layout = when (kind) {
         FieldKind.NUMBER -> LayoutNumber.build(false)
         FieldKind.DATETIME -> LayoutNumber.build(true)
         FieldKind.PHONE -> LayoutPhone.build()
-        FieldKind.TEXT, FieldKind.EMAIL, FieldKind.URL -> Letters.build(Letters.data(language), numberRow)
+        FieldKind.TEXT, FieldKind.EMAIL, FieldKind.URL -> Letters.build(Letters.data(language), numberRow, emojiComma)
     }
 
     fun read(info: EditorInfo?): FieldInfo = if (info == null) FieldInfo.PLAIN else read(info.inputType, info.imeOptions)

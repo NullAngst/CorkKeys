@@ -1,5 +1,18 @@
 # Changes
 
+2026.11.28 - Clipboard history and emoji
+
+* Clipboard history, off by default and switched on on the Privacy page, with its own button next to Paste: every copy kept in memory for an hour, pinned clips kept until deleted, Clear for the unpinned ones
+* "Saved across restarts" setting: none, 1, 3, 5, 10, 20 or 50 of the newest clips (5 by default) plus every pinned clip are saved, AES-256-GCM encrypted with an Android Keystore key, in credential-encrypted storage
+* History skips copies marked sensitive (password managers), records nothing while incognito, hides in password fields and on the lock screen, and deletes everything when switched off
+* Emoji board from Unicode 17.0: one scroll of every group with tabs, recently used first, skin tones on long-press, emoji the phone's font can't draw left out, TalkBack reads each emoji's name
+* The comma key shows a small :) and its long-press offers settings and emoji; an "Emoji on the comma key" setting puts it back to settings only. Emoji are also in the tools row
+* Backspace deletes a whole emoji, flag or family at once instead of leaving pieces behind
+* tools/convert_emoji.sh to rebuild the emoji list from Unicode's emoji-test.txt, and a maintenance step for it
+* The clipboard CI check allows ClipboardHistory.kt next to Paste.kt
+
+Reasons for changes: requested for v1.0.0. Clipboard history works like Gboard's defaults, with the saved count left to you and the saved part encrypted.
+
 2026.11.27 - Suggestions, swipe, modes and docs
 
 * Word lists for English (US), German and Spanish from aosp-dictionaries (Leipzig Corpora Collection, CC BY 4.0), 250,000 words each, with extra lists for swear words and slurs

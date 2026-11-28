@@ -18,16 +18,18 @@ A new install is a plain keyboard. Suggestions, autocorrect, swipe and learned w
 - Swipe typing, written from scratch: no Google library, no model files.
 - Suggestions and autocorrect from the bundled word lists, on the phone. Swear words and slurs are never corrected into something else.
 - Double-space period, automatic capitals at sentence starts, space after a suggestion.
-- A Paste button at the right end of the strip. Nothing touches the clipboard until you press it.
+- A Paste button at the right end of the strip. With clipboard history off, nothing touches the clipboard until you press it.
+- Clipboard history, off by default, with its own button next to Paste. Every copy is kept in memory for an hour; pin a clip and it stays. You pick how many of the newest clips are also saved, encrypted, across restarts (none, 1, 3, 5, 10, 20 or 50; 5 by default). Copies an app marks sensitive, like passwords from a password manager, are never kept, nor is anything copied while incognito. Hidden in password fields and on the lock screen.
+- Emoji: long-press the comma (it shows a small `:)`) and slide to the emoji button, or open them from the tools row. Every group in one scroll with tabs, recently used first, skin tones on long-press. Emoji your phone's font can't draw are left out. Recents and picked tones stay in memory only. Backspace takes a whole emoji, flags and families included.
 - Slide along the space bar to move the cursor. Slide left from backspace to delete whole words, slide back right to put them back before you lift. Hold backspace to repeat.
-- A tools row with the editing panel (arrows, select, select all, cut, copy, paste, start and end of line), one-handed mode, a floating keyboard you drag anywhere, a voice keyboard handoff and settings.
+- A tools row with the editing panel (arrows, select, select all, cut, copy, paste, start and end of line), emoji, one-handed mode, a floating keyboard you drag anywhere, a voice keyboard handoff and settings.
 - Android's spell checker service, from the same word lists, for red underlines in other apps.
 - Themes: Light, Dark, Verdigris, Kawaii Light, Kawaii Dark and Material You, the same palettes as Corkboard. Bordered or flat keys.
 - Keyboard height: Short, Normal, Tall, Taller, or a custom row height on a slider.
 - TalkBack support with explore-by-touch typing.
 - Works on the lock screen right after a reboot.
 
-Left out on purpose: emoji, GIF and sticker search, clipboard history, next-word prediction, cloud sync, online spell check, built-in voice typing, analytics, crash reporting, ads.
+Left out on purpose: GIF and sticker search, emoji search, next-word prediction, cloud sync, online spell check, built-in voice typing, analytics, crash reporting, ads.
 
 ## Screenshots
 
@@ -55,7 +57,7 @@ Themes: Verdigris, Kawaii Light, Kawaii Dark, Dark with flat keys, Material You.
 
 ## Privacy, in short
 
-CorkKeys asks Android for no permissions at all. Without INTERNET, Android refuses every network connection it could try to make. Nothing you type is written anywhere unless you turn on learned words, and then only the words themselves are kept. CI fails the build if a permission, a logging call, or clipboard use outside `Paste.kt` ever shows up. The full notes are in [PRIVACY.md](PRIVACY.md).
+CorkKeys asks Android for no permissions at all. Without INTERNET, Android refuses every network connection it could try to make. Nothing you type is written anywhere unless you turn on learned words or clipboard history, and then only the words themselves or the clips are kept. CI fails the build if a permission, a logging call, or clipboard use outside `Paste.kt` and `ClipboardHistory.kt` ever shows up. The full notes are in [PRIVACY.md](PRIVACY.md).
 
 ## Install and set up
 
