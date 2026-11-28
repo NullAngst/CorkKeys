@@ -133,8 +133,11 @@ open_field() {
     log "current keyboard: $cur (subtype $sub)"
     if [ "$cur" != "$ime" ]; then
         fail "keyboard still selected after restart" "Android switched to $cur"
-        adb shell ime set "$ime" >/dev/null
-        sleep 2
+        for _ in 1 2 3 4 5; do
+            adb shell ime set "$ime" >/dev/null 2>&1
+            [ "$(adb shell settings get secure default_input_method | tr -d '\r')" = "$ime" ] && break
+            sleep 3
+        done
     fi
     adb shell am start -W -n "$pkg/io.github.nullangst.corkkeys.SetupActivity" >/dev/null
     sleep 3
@@ -228,8 +231,13 @@ unzip -lv app/build/outputs/apk/debug/app-debug.apk | grep 'words/' | tee -a "$o
 adb install -r -t app/build/outputs/apk/debug/app-debug.apk >/dev/null
 # The emulator has a hardware keyboard; without this Android hides every on-screen keyboard.
 adb shell settings put secure show_ime_with_hard_keyboard 1
-adb shell ime enable "$ime" >/dev/null
-adb shell ime set "$ime" >/dev/null
+# Android sometimes ignores the first ime set right after an install; keep at it for a while.
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+    adb shell ime enable "$ime" >/dev/null 2>&1
+    adb shell ime set "$ime" >/dev/null 2>&1
+    [ "$(adb shell settings get secure default_input_method | tr -d '\r')" = "$ime" ] && break
+    sleep 3
+done
 check "CorkKeys is the keyboard" "$ime" "$(adb shell settings get secure default_input_method | tr -d '\r')"
 
 # ---- 1. Plain keyboard ----
