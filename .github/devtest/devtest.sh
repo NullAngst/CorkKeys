@@ -122,10 +122,20 @@ prefs() {
     adb push "$tmp" /data/local/tmp/settings.xml >/dev/null
     adb shell "run-as $pkg sh -c 'mkdir -p /data/user_de/0/$pkg/shared_prefs && cp /data/local/tmp/settings.xml /data/user_de/0/$pkg/shared_prefs/settings.xml'"
     rm -f -- "$tmp"
+    sleep 2
     adb shell ime set "$ime" >/dev/null
+    sleep 1
 }
 
 open_field() {
+    cur=$(adb shell settings get secure default_input_method | tr -d '\r')
+    sub=$(adb shell settings get secure selected_input_method_subtype | tr -d '\r')
+    log "current keyboard: $cur (subtype $sub)"
+    if [ "$cur" != "$ime" ]; then
+        fail "keyboard still selected after restart" "Android switched to $cur"
+        adb shell ime set "$ime" >/dev/null
+        sleep 2
+    fi
     adb shell am start -W -n "$pkg/io.github.nullangst.corkkeys.SetupActivity" >/dev/null
     sleep 3
     dump setup
@@ -402,6 +412,7 @@ adb shell am start -W -n "$pkg/io.github.nullangst.corkkeys.PrivacyActivity" >/d
 sleep 2
 shot 15-privacy
 
+adb logcat -d -s InputMethodManagerService:* InputMethodService:* ImeTracker:* > "$out/ime-log.txt" 2>&1 || true
 adb logcat -d -b crash > "$out/crash.txt" 2>&1 || true
 if [ -s "$out/crash.txt" ] && grep -q "$pkg" "$out/crash.txt"; then fail "no crashes" "see crash.txt"; else pass "no crashes"; fi
 
