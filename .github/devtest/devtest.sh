@@ -515,7 +515,8 @@ if history_field; then
     clear_field
     tap_key "copyme" || true
     sleep 1
-    check "a clip pastes from history" "copyme" "$(field_text)"
+    # The Contacts name field capitalizes words, so the clip is "Copyme".
+    check "a clip pastes from history" "copyme" "$(field_text | tr '[:upper:]' '[:lower:]')"
     clear_field
     files=$(adb shell "run-as $pkg ls files" | tr -d '\r' | tr '\n' ' ')
     log "app files: $files"
