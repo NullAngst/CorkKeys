@@ -1,0 +1,42 @@
+# Swear words and slurs the source list misses or does not mark. They are real words: autocorrect
+# leaves them exactly as typed, and the strip shows them only with the swear-word switch on.
+# Same columns as the main list: word, frequency (used only for words the list lacks), flag.
+mierda	60	o
+mierdas	60	o
+puta	60	o
+putas	60	o
+puto	60	o
+putos	60	o
+joder	60	o
+jodido	60	o
+jodida	60	o
+coño	60	o
+cabrón	60	o
+cabron	60	o
+cabrones	60	o
+gilipollas	60	o
+pendejo	60	o
+pendeja	60	o
+pendejos	60	o
+chingar	60	o
+chingada	60	o
+chingado	60	o
+pinche	60	o
+verga	60	o
+culero	60	o
+maricón	60	o
+maricones	60	o
+marica	60	o
+hostia	60	o
+hostias	60	o
+hijoputa	60	o
+carajo	60	o
+culo	60	o
+culos	60	o
+zorra	60	o
+polla	60	o
+follar	60	o
+tetas	60	o
+capullo	60	o
+puñeta	60	o
+mamón	60	o
