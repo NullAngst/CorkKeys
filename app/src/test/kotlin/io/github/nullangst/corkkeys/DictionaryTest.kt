@@ -74,6 +74,18 @@ class DictionaryTest {
     }
 
     @Test
+    fun readsGzippedAndPlainLists() {
+        // The APK may hold a list gzipped, or already unpacked by the packager; both must load.
+        val plain = "the\t200\t-\nhaus\t120\t-\n".toByteArray()
+        val zipped = java.io.ByteArrayOutputStream().also { o -> java.util.zip.GZIPOutputStream(o).use { it.write(plain) } }.toByteArray()
+        for (bytes in listOf(plain, zipped)) {
+            val d = Dictionary.read("t", bytes.inputStream(), null)
+            assertEquals(2, d.size)
+            assertTrue(d.find("haus") >= 0)
+        }
+    }
+
+    @Test
     fun trieAnswersExactly() {
         val d = Dictionary.build("t", sequenceOf("the\t200\t-", "they\t150\t-", "Haus\t120\t-", "damn\t80\to", "", "bad line", "x\tnotanumber\t-"))
         assertEquals(4, d.size)

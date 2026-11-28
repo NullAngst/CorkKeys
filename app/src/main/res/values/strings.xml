@@ -170,4 +170,5 @@
     <string name="settings_voice_none">None</string>
     <string name="settings_voice_sub">Pick one of your other keyboards and a mic button shows in the tools row that switches to it. CorkKeys has no voice code of its own.</string>
     <string name="settings_voice_empty">No other keyboard is enabled. Enable one in Android\'s keyboard settings first.</string>
+    <string name="settings_words_failed">The word list for %1$s could not be loaded, so suggestions, swipe and the spell checker are off for it. Please open an issue on GitHub.</string>
 </resources>

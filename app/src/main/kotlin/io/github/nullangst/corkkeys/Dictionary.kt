@@ -6,7 +6,9 @@
 package io.github.nullangst.corkkeys
 
 import android.content.Context
+import java.io.BufferedInputStream
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.concurrent.ConcurrentHashMap
@@ -189,8 +191,17 @@ class Dictionary private constructor(
             return b.build()
         }
 
+        /** Reads a list that may or may not be gzipped, going by the first two bytes. */
+        fun unpacked(raw: InputStream): InputStream {
+            val b = BufferedInputStream(raw, 1 shl 16)
+            b.mark(2)
+            val gz = b.read() == 0x1f && b.read() == 0x8b
+            b.reset()
+            return if (gz) GZIPInputStream(b, 1 shl 16) else b
+        }
+
         fun read(language: String, list: InputStream, extra: InputStream?): Dictionary {
-            val main = BufferedReader(InputStreamReader(GZIPInputStream(list, 1 shl 16), Charsets.UTF_8), 1 shl 16)
+            val main = BufferedReader(InputStreamReader(unpacked(list), Charsets.UTF_8), 1 shl 16)
             val more = extra?.let { BufferedReader(InputStreamReader(it, Charsets.UTF_8)) }
             main.use { m ->
                 val extraLines = more?.use { it.readLines() }.orEmpty()
@@ -212,6 +223,9 @@ class Dictionary private constructor(
 object Dictionaries {
     private val loaded = ConcurrentHashMap<String, Dictionary>()
     private val loading = ConcurrentHashMap.newKeySet<String>()
+
+    /** Languages whose list could not be read. Settings says so, since nothing else would. */
+    val failed: MutableSet<String> = ConcurrentHashMap.newKeySet()
     private val worker = Executors.newSingleThreadExecutor { r -> Thread(r, "corkkeys-words").apply { priority = Thread.MIN_PRIORITY + 1 } }
 
     fun get(language: String): Dictionary? = loaded[language]
@@ -223,14 +237,23 @@ object Dictionaries {
             if (loaded.containsKey(lang) || !loading.add(lang)) continue
             worker.execute {
                 try {
-                    val list = app.assets.open("words/$lang.txt.gz")
+                    // Android's packaging can store a .gz asset under its name without .gz,
+                    // already unpacked; read() takes either form.
+                    val list = try {
+                        app.assets.open("words/$lang.txt.gz")
+                    } catch (_: IOException) {
+                        app.assets.open("words/$lang.txt")
+                    }
                     val extra = try {
                         app.assets.open("words/${lang}_extra.txt")
                     } catch (_: Exception) {
                         null
                     }
                     loaded[lang] = Dictionary.read(lang, list, extra)
-                } catch (_: Exception) {
+                    failed.remove(lang)
+                } catch (_: Throwable) {
+                    // An OutOfMemoryError lands here too: the keyboard keeps working without suggestions.
+                    failed += lang
                 } finally {
                     loading.remove(lang)
                 }

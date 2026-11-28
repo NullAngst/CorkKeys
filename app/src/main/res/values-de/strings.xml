@@ -157,4 +157,5 @@
     <string name="settings_voice_none">Keine</string>
     <string name="settings_voice_sub">Wähle eine deiner anderen Tastaturen, und in der Werkzeugleiste erscheint ein Mikrofon, das zu ihr wechselt. CorkKeys hat keinen eigenen Sprachcode.</string>
     <string name="settings_voice_empty">Keine andere Tastatur ist aktiviert. Aktiviere zuerst eine in den Tastatureinstellungen von Android.</string>
+    <string name="settings_words_failed">Die Wortliste für %1$s konnte nicht geladen werden, daher sind Vorschläge, Wischen und die Rechtschreibprüfung dafür aus. Bitte öffne ein Issue auf GitHub.</string>
 </resources>

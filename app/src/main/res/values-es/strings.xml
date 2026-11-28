@@ -157,4 +157,5 @@
     <string name="settings_voice_none">Ninguno</string>
     <string name="settings_voice_sub">Elige otro de tus teclados y aparece un micrófono en la fila de herramientas que cambia a él. CorkKeys no tiene código de voz propio.</string>
     <string name="settings_voice_empty">No hay ningún otro teclado activado. Activa uno primero en los ajustes de teclado de Android.</string>
+    <string name="settings_words_failed">No se pudo cargar la lista de palabras de %1$s, así que las sugerencias, el deslizamiento y el corrector no funcionan para ese idioma. Abre un issue en GitHub, por favor.</string>
 </resources>

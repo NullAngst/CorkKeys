@@ -105,6 +105,9 @@ class SettingsActivity : Activity() {
         // ---- Typing ----
         add(Ui.header(this, pal, str(R.string.settings_typing)))
         switch(R.string.settings_suggestions, prefs.suggestions, R.string.settings_suggestions_sub) { prefs.suggestions = it }
+        if (Dictionaries.failed.isNotEmpty()) {
+            add(Ui.note(this, pal, getString(R.string.settings_words_failed, Dictionaries.failed.joinToString(", ") { Languages.name(this, it) })))
+        }
         switch(R.string.settings_autocorrect, prefs.autocorrect, R.string.settings_autocorrect_sub, prefs.suggestions) { prefs.autocorrect = it }
         switch(R.string.settings_swear, prefs.swearWords, R.string.settings_swear_sub, prefs.suggestions) { prefs.swearWords = it }
         switch(R.string.settings_no_suggest_fields, prefs.inNoSuggestFields, R.string.settings_no_suggest_fields_sub, prefs.suggestions) {
