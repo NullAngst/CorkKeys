@@ -128,6 +128,7 @@ prefs() {
 }
 
 open_field() {
+    adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null 2>&1 || true
     cur=$(adb shell settings get secure default_input_method | tr -d '\r')
     sub=$(adb shell settings get secure selected_input_method_subtype | tr -d '\r')
     log "current keyboard: $cur (subtype $sub)"
@@ -229,6 +230,10 @@ log "Android $(adb shell getprop ro.build.version.release) (API $(adb shell getp
 log "word lists in the APK:"
 unzip -lv app/build/outputs/apk/debug/app-debug.apk | grep 'words/' | tee -a "$out/steps.txt"
 adb install -r -t app/build/outputs/apk/debug/app-debug.apk >/dev/null
+# A slow runner can make the emulator's own launcher stop responding; that dialog would sit over
+# every step. Errors still land in the crash log, which is checked at the end.
+adb shell settings put global hide_error_dialogs 1
+adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null 2>&1 || true
 # The emulator has a hardware keyboard; without this Android hides every on-screen keyboard.
 adb shell settings put secure show_ime_with_hard_keyboard 1
 # Android sometimes ignores the first ime set right after an install; keep at it for a while.
