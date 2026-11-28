@@ -391,7 +391,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         }
         kv.enter = field.enter
         kv.spaceLabel = spaceLabel()
-        kv.setLayout(layout, frame(), prefs.height, mode(), rows)
+        kv.setLayout(layout, frame(), prefs.rowDp, mode(), rows)
         applyMode()
         syncPanelHeight()
         prepareDecoder()
@@ -399,8 +399,14 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
 
     private fun spaceLabel(): String {
         val label = Languages.spaceLabel(prefs.language, prefs.languages, mixing())
-        return if (prefs.incognito) label + " · " + getString(R.string.space_incognito) else label
+        return if (incognito()) label + " · " + getString(R.string.space_incognito) else label
     }
+
+    /**
+     * Incognito: switched on by hand, or asked for by the app (Signal's incognito keyboard,
+     * private browser tabs). Nothing is learned and learned words aren't suggested.
+     */
+    private fun incognito(): Boolean = field.incognito(prefs.incognito)
 
     /** Words from every language that is on, in one sentence. Only matters with suggestions on. */
     private fun mixing(): Boolean = prefs.twoAtOnce && prefs.suggestions && prefs.languages.size > 1
@@ -458,7 +464,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         if (dicts.isEmpty() || dicts[0].language != prefs.language) return null
         val learned = LearnedWords.get(this)
         val removed = RemovedWords.get(this)
-        val learnOn = prefs.learn
+        val learnOn = prefs.learn && !incognito()
         val key = langs.joinToString(",") + "|" + dicts.size + "|" + learnOn + "|" + learned.version + "|" + removed.version
         if (key != correctorKey || corrector == null) {
             val keyMap = KeyMap.of(Letters.build(Letters.data(prefs.language), false))
@@ -522,7 +528,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
 
     /** A word went in exactly as tapped out. Learned only with the switch on, outside incognito and private fields. */
     fun learn(word: String) {
-        val allowed = prefs.learn && !prefs.incognito && field.allowsLearning
+        val allowed = prefs.learn && !incognito() && field.allowsLearning
         if (!allowed) return
         val c = corrector() ?: return
         if (LearnedWords.get(this).typedInFull(word, true, c.inList(word))) correctorKey = ""

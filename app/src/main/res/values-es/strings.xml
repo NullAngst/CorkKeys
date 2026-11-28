@@ -98,7 +98,7 @@
     <string name="privacy_intro">Un teclado ve cada contraseña y cada mensaje que escribes. CorkKeys está hecho para que nada de lo que escribes salga del teléfono y no se guarde nada salvo que lo actives aquí.</string>
     <string name="privacy_switches">Desactivados hasta que los actives</string>
     <string name="privacy_incognito">Incógnito</string>
-    <string name="privacy_incognito_sub">El aprendizaje queda desactivado en todas partes hasta que lo vuelvas a quitar. También en el menú al mantener pulsado el espacio; la barra espaciadora lo indica mientras está activo.</string>
+    <string name="privacy_incognito_sub">El aprendizaje queda desactivado en todas partes hasta que lo vuelvas a quitar. También en el menú al mantener pulsado el espacio. Las apps también pueden pedirlo, como el ajuste de teclado de incógnito de Signal o una pestaña privada del navegador, y reciben lo mismo. La barra espaciadora lo indica mientras está activo y las palabras aprendidas no se sugieren.</string>
     <string name="privacy_facts">Lo que CorkKeys no puede hacer</string>
     <string name="privacy_fact_network">No tiene permiso de internet, así que Android bloquea cualquier conexión de red que intente.</string>
     <string name="privacy_fact_stored">Nada de lo que escribes se guarda en ningún sitio. La palabra que estás escribiendo vive en memoria hasta que entra en la app y después desaparece.</string>
@@ -158,4 +158,9 @@
     <string name="settings_voice_sub">Elige otro de tus teclados y aparece un micrófono en la fila de herramientas que cambia a él. CorkKeys no tiene código de voz propio.</string>
     <string name="settings_voice_empty">No hay ningún otro teclado activado. Activa uno primero en los ajustes de teclado de Android.</string>
     <string name="settings_words_failed">No se pudo cargar la lista de palabras de %1$s, así que las sugerencias, el deslizamiento y el corrector no funcionan para ese idioma. Abre un issue en GitHub, por favor.</string>
+    <string name="height_taller">Más alta</string>
+    <string name="height_custom">Personalizada</string>
+    <string name="height_custom_value">%1$d dp por fila</string>
+    <string name="height_custom_title">Altura de fila</string>
+    <string name="height_custom_note">Normal es 54 dp, Alta 60, Más alta 68. Las teclas nunca ocupan más de unos dos quintos de la pantalla, un tercio en horizontal, así que las filas muy altas dejan de crecer ahí.</string>
 </resources>

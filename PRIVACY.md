@@ -27,8 +27,8 @@ Settings live in device-protected storage so the keyboard works on the lock scre
 ## Fields that stay private
 
 - Password fields: no suggestions, no autocorrect, no swipe, no key bubbles, nothing learned.
-- Fields that ask for no personalised learning (`IME_FLAG_NO_PERSONALIZED_LEARNING`, used by private browser tabs and incognito apps): nothing is learned.
-- Manual incognito: the switch in the long-press space menu, or on the Privacy page, turns learning off everywhere until you switch it back. The space bar shows it while it's on.
+- Incognito fields: apps ask for this with Android's `IME_FLAG_NO_PERSONALIZED_LEARNING`. Signal with its "Incognito keyboard" setting on does, and so do Firefox and Chrome private tabs. In those fields nothing is learned, your learned words aren't offered as suggestions, and the space bar shows "incognito".
+- Manual incognito: the switch in the long-press space menu, or on the Privacy page, does the same everywhere until you switch it back.
 
 ## Clipboard
 

@@ -55,7 +55,12 @@ class GeometryTest {
         val short = Geometry.plan(l, f, KeyHeight.SHORT, Mode.DOCKED).height
         val normal = Geometry.plan(l, f, KeyHeight.NORMAL, Mode.DOCKED).height
         val tall = Geometry.plan(l, f, KeyHeight.TALL, Mode.DOCKED).height
-        assertTrue(short < normal && normal < tall)
+        val taller = Geometry.plan(l, f, KeyHeight.TALLER, Mode.DOCKED).height
+        assertTrue(short < normal && normal < tall && tall < taller)
+        val custom = Geometry.plan(l, f, 80f, Mode.DOCKED).height
+        assertTrue("a custom height taller than Taller", custom > taller)
+        val huge = Geometry.plan(l, f, 500f, Mode.DOCKED).height
+        assertTrue("custom heights stop at the cap", huge <= f.windowHeight * Geometry.MAX_HEIGHT_FRACTION + 6 * 3 * f.density)
         for (fr in frames) for (h in KeyHeight.entries) {
             val p = Geometry.plan(l, fr, h, Mode.DOCKED)
             assertTrue("keys stay under the height cap", p.height - fr.insetBottom <= fr.windowHeight * Geometry.maxKeysFraction(fr) + 6 * 3.5f * fr.density)

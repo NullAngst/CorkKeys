@@ -98,7 +98,7 @@
     <string name="privacy_intro">Eine Tastatur sieht jedes Passwort und jede Nachricht, die du tippst. CorkKeys ist so gebaut, dass nichts Getipptes das Telefon verlässt und nichts gespeichert wird, solange du es hier nicht einschaltest.</string>
     <string name="privacy_switches">Aus, bis du sie einschaltest</string>
     <string name="privacy_incognito">Inkognito</string>
-    <string name="privacy_incognito_sub">Lernen bleibt überall aus, bis du das wieder ausschaltest. Auch im Menü der lang gedrückten Leertaste; die Leertaste zeigt es an, solange es an ist.</string>
+    <string name="privacy_incognito_sub">Lernen bleibt überall aus, bis du das wieder ausschaltest. Auch im Menü der lang gedrückten Leertaste. Apps können es auch anfordern, etwa die Inkognito-Tastatur-Einstellung von Signal oder ein privater Browser-Tab, und bekommen dasselbe. Die Leertaste zeigt es an, solange es an ist, und gelernte Wörter werden nicht vorgeschlagen.</string>
     <string name="privacy_facts">Was CorkKeys nicht kann</string>
     <string name="privacy_fact_network">Es hat keine Internetberechtigung, also blockiert Android jede Netzwerkverbindung, die es versuchen könnte.</string>
     <string name="privacy_fact_stored">Nichts Getipptes wird irgendwo gespeichert. Das Wort, das du gerade tippst, liegt im Arbeitsspeicher, bis es in der App ist, dann ist es weg.</string>
@@ -158,4 +158,9 @@
     <string name="settings_voice_sub">Wähle eine deiner anderen Tastaturen, und in der Werkzeugleiste erscheint ein Mikrofon, das zu ihr wechselt. CorkKeys hat keinen eigenen Sprachcode.</string>
     <string name="settings_voice_empty">Keine andere Tastatur ist aktiviert. Aktiviere zuerst eine in den Tastatureinstellungen von Android.</string>
     <string name="settings_words_failed">Die Wortliste für %1$s konnte nicht geladen werden, daher sind Vorschläge, Wischen und die Rechtschreibprüfung dafür aus. Bitte öffne ein Issue auf GitHub.</string>
+    <string name="height_taller">Höher</string>
+    <string name="height_custom">Eigene</string>
+    <string name="height_custom_value">%1$d dp pro Reihe</string>
+    <string name="height_custom_title">Reihenhöhe</string>
+    <string name="height_custom_note">Normal ist 54 dp, Hoch 60, Höher 68. Die Tasten nehmen nie mehr als etwa zwei Fünftel des Bildschirms ein, im Querformat ein Drittel, also wachsen sehr hohe Reihen dort nicht weiter.</string>
 </resources>

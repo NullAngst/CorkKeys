@@ -13,6 +13,7 @@ A new install is a plain keyboard. Suggestions, autocorrect, swipe and learned w
 - ?123 opens the symbols page, and a key there opens a second page with currency, math signs, °, ©, ®, ™, • and the less common brackets. The currency key follows the language: € for German and Spanish, $ for English.
 - A number pad for number, date and time fields and a phone pad for phone fields, opened on their own from the field type.
 - An optional number row, off by default.
+- Incognito, by hand from the long-press space menu, or when an app asks for it (Signal's incognito keyboard setting, Firefox and Chrome private tabs, and anything else that sets Android's no-personalised-learning flag). The space bar shows it, nothing is learned, and learned words aren't suggested.
 - Long-press the space bar for the language menu and the incognito switch. The space bar always shows the language: `EN`, or `EN • DE` with two languages at once.
 - Swipe typing, written from scratch: no Google library, no model files.
 - Suggestions and autocorrect from the bundled word lists, on the phone. Swear words and slurs are never corrected into something else.
@@ -21,7 +22,8 @@ A new install is a plain keyboard. Suggestions, autocorrect, swipe and learned w
 - Slide along the space bar to move the cursor. Slide left from backspace to delete whole words, slide back right to put them back before you lift. Hold backspace to repeat.
 - A tools row with the editing panel (arrows, select, select all, cut, copy, paste, start and end of line), one-handed mode, a floating keyboard you drag anywhere, a voice keyboard handoff and settings.
 - Android's spell checker service, from the same word lists, for red underlines in other apps.
-- Themes: Light, Dark, Verdigris, Kawaii Light, Kawaii Dark and Material You, the same palettes as Corkboard. Bordered or flat keys, three heights.
+- Themes: Light, Dark, Verdigris, Kawaii Light, Kawaii Dark and Material You, the same palettes as Corkboard. Bordered or flat keys.
+- Keyboard height: Short, Normal, Tall, Taller, or a custom row height on a slider.
 - TalkBack support with explore-by-touch typing.
 - Works on the lock screen right after a reboot.
 

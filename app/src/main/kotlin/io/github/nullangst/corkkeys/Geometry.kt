@@ -32,7 +32,7 @@ class Box(val left: Float, val top: Float, val right: Float, val bottom: Float) 
  */
 class PlacedKey(val key: Key, val box: Box, val hit: Box, val row: Int)
 
-enum class KeyHeight(val dp: Float) { SHORT(48f), NORMAL(54f), TALL(60f) }
+enum class KeyHeight(val dp: Float) { SHORT(48f), NORMAL(54f), TALL(60f), TALLER(68f) }
 
 enum class Mode { DOCKED, ONE_LEFT, ONE_RIGHT, FLOATING }
 
@@ -86,7 +86,15 @@ object Geometry {
      * page with one row more than the letters squeezes its rows into the same space instead of
      * making the keyboard jump.
      */
-    fun plan(layout: Layout, frame: Frame, height: KeyHeight, mode: Mode, rowsForHeight: Int = layout.rows.size): Plan {
+    fun plan(layout: Layout, frame: Frame, height: KeyHeight, mode: Mode, rowsForHeight: Int = layout.rows.size): Plan =
+        plan(layout, frame, height.dp, mode, rowsForHeight)
+
+    /** The smallest and largest row height the custom height setting allows, in dp. */
+    const val MIN_ROW_DP = 40f
+    const val MAX_ROW_DP = 96f
+
+    /** Lays out [layout] with rows [rowDp] high, before the cap on the window's height. */
+    fun plan(layout: Layout, frame: Frame, rowDp: Float, mode: Mode, rowsForHeight: Int = layout.rows.size): Plan {
         val d = frame.density
         val usable = frame.usableWidth.toFloat()
         val floating = mode == Mode.FLOATING
@@ -111,7 +119,7 @@ object Geometry {
         }
 
         val pad = PAD_DP * d
-        var rowH = height.dp * d * (if (floating) FLOAT_SCALE else 1f)
+        var rowH = rowDp.coerceIn(MIN_ROW_DP, MAX_ROW_DP) * d * (if (floating) FLOAT_SCALE else 1f)
         val maxKeys = frame.windowHeight * (if (floating) FLOAT_MAX_HEIGHT_FRACTION else maxKeysFraction(frame))
         if (rowH * rowsForHeight > maxKeys) rowH = maxKeys / rowsForHeight
         val keysHeight = rowH * rowsForHeight

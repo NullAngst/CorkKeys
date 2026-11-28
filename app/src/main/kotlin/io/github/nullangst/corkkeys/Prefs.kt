@@ -105,6 +105,15 @@ class Prefs(val kv: KeyValues, systemLanguage: String = "en") {
     /** The keyboard picked for the mic button, as an input method id. Empty: none, no mic. */
     var voiceIme by str("voice_ime", "")
 
+    /** Row height in dp when the height is set to custom. */
+    var customRowDp by float("custom_row_dp", KeyHeight.TALLER.dp)
+
+    /** Whether the height is the custom one rather than a preset. */
+    val customHeight: Boolean get() = heightRaw == CUSTOM
+
+    /** The row height to draw, in dp: the preset's, or the custom one. */
+    val rowDp: Float get() = if (customHeight) customRowDp.coerceIn(Geometry.MIN_ROW_DP, Geometry.MAX_ROW_DP) else height.dp
+
     var height: KeyHeight
         get() = KeyHeight.entries.firstOrNull { it.name == heightRaw } ?: KeyHeight.NORMAL
         set(v) {
@@ -129,6 +138,7 @@ class Prefs(val kv: KeyValues, systemLanguage: String = "en") {
     val language: String get() = current.takeIf { it in languages } ?: languages.first()
 
     companion object {
+        const val CUSTOM = "CUSTOM"
         private const val FILE = "settings"
 
         fun open(ctx: Context): Prefs {

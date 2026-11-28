@@ -26,7 +26,7 @@ class KeyboardView(ctx: Context, host: TouchHost) : View(ctx) {
         private set
     private var layout: Layout? = null
     private var frame: Frame? = null
-    private var keyHeight = KeyHeight.NORMAL
+    private var rowDp = KeyHeight.NORMAL.dp
     private var mode = Mode.DOCKED
     private var rowsForHeight = 4
 
@@ -68,10 +68,10 @@ class KeyboardView(ctx: Context, host: TouchHost) : View(ctx) {
 
     fun dp(v: Float) = v * resources.displayMetrics.density
 
-    fun setLayout(l: Layout, f: Frame, h: KeyHeight, m: Mode, rows: Int) {
+    fun setLayout(l: Layout, f: Frame, rowHeightDp: Float, m: Mode, rows: Int) {
         layout = l
         frame = f
-        keyHeight = h
+        rowDp = rowHeightDp
         mode = m
         rowsForHeight = rows
         replan()
@@ -86,7 +86,7 @@ class KeyboardView(ctx: Context, host: TouchHost) : View(ctx) {
         val l = layout ?: return
         val f = frame ?: return
         touch.cancelAll()
-        plan = Geometry.plan(l, f, keyHeight, mode, rowsForHeight)
+        plan = Geometry.plan(l, f, rowDp, mode, rowsForHeight)
         accessibility?.invalidateAll()
         requestLayout()
         invalidate()

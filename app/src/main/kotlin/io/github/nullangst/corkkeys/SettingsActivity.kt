@@ -84,11 +84,17 @@ class SettingsActivity : Activity() {
         add(Ui.header(this, pal, str(R.string.settings_keys)))
         switch(R.string.settings_number_row, prefs.numberRow) { prefs.numberRow = it }
         val heights = KeyHeight.entries
-        val heightNames = listOf(str(R.string.height_short), str(R.string.height_normal), str(R.string.height_tall))
-        add(Ui.row(this, pal, str(R.string.settings_height), heightNames[heights.indexOf(prefs.height)]) {
-            Ui.choose(this, pal, str(R.string.settings_height), heightNames, heights.indexOf(prefs.height)) {
-                prefs.height = heights[it]
-                build()
+        val heightNames = listOf(str(R.string.height_short), str(R.string.height_normal), str(R.string.height_tall), str(R.string.height_taller), str(R.string.height_custom))
+        val heightNow = if (prefs.customHeight) getString(R.string.height_custom_value, prefs.rowDp.toInt()) else heightNames[heights.indexOf(prefs.height)]
+        add(Ui.row(this, pal, str(R.string.settings_height), heightNow) {
+            val current = if (prefs.customHeight) heights.size else heights.indexOf(prefs.height)
+            Ui.choose(this, pal, str(R.string.settings_height), heightNames, current) {
+                if (it < heights.size) {
+                    prefs.height = heights[it]
+                    build()
+                } else {
+                    customHeight()
+                }
             }
         })
         switch(R.string.settings_bordered, prefs.bordered, R.string.settings_bordered_sub) { prefs.bordered = it }
@@ -158,6 +164,49 @@ class SettingsActivity : Activity() {
         add(Ui.note(this, pal, str(R.string.about_openboard)))
         list.addView(View(this), LinearLayout.LayoutParams(1, Ui.dp(this, 24f)))
         scroll.post { scroll.scrollTo(0, y) }
+    }
+
+    /** A slider for the row height, in dp, with the value shown as it moves. */
+    private fun customHeight() {
+        val min = Geometry.MIN_ROW_DP.toInt()
+        val max = Geometry.MAX_ROW_DP.toInt()
+        val label = android.widget.TextView(this).apply {
+            textSize = 16f
+            setTextColor(pal.text)
+            setPadding(Ui.dp(context, 24f), Ui.dp(context, 8f), Ui.dp(context, 24f), 0)
+        }
+        val bar = android.widget.SeekBar(this).apply {
+            this.max = max - min
+            progress = (prefs.rowDp.toInt() - min).coerceIn(0, max - min)
+            Ui.tint(this, pal)
+        }
+        fun show() {
+            label.text = getString(R.string.height_custom_value, bar.progress + min)
+        }
+        show()
+        bar.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(s: android.widget.SeekBar, p: Int, fromUser: Boolean) = show()
+            override fun onStartTrackingTouch(s: android.widget.SeekBar) {}
+            override fun onStopTrackingTouch(s: android.widget.SeekBar) {}
+        })
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(label)
+            addView(bar, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                setMargins(Ui.dp(context, 12f), Ui.dp(context, 12f), Ui.dp(context, 12f), Ui.dp(context, 4f))
+            })
+            addView(Ui.note(context, pal, getString(R.string.height_custom_note)))
+        }
+        android.app.AlertDialog.Builder(this, Themes.dialogTheme(pal))
+            .setTitle(R.string.height_custom_title)
+            .setView(box)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                prefs.customRowDp = (bar.progress + min).toFloat()
+                prefs.heightRaw = Prefs.CUSTOM
+                build()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun open(url: String) {

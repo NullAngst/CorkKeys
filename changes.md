@@ -11,6 +11,8 @@
 * Word list credit in the About section of settings
 * Word lists load whether the APK holds them gzipped or unpacked: on a device they never loaded, which left suggestions, autocorrect, swipe and the spell checker empty
 * A word list that fails to load is named in settings instead of failing silently
+* Incognito when an app asks for it (Signal's incognito keyboard, private browser tabs): the space bar shows it, and learned words stay out of suggestions as well as nothing being learned
+* Keyboard height: a Taller preset and a custom row height slider
 * Landscape: the keys take at most 34% of the screen's height (42% in portrait) and the suggestion strip is shorter, so the app keeps room for the field being typed in
 * Settings screens scroll a focused field back into view when the keyboard opens, so the setup screen's test field isn't hidden in landscape
 * Screenshots in the README, from the device test

@@ -111,7 +111,7 @@
     <string name="privacy_intro">A keyboard sees every password and message you type. CorkKeys is built so that nothing you type leaves the phone, and nothing is kept unless you turn it on here.</string>
     <string name="privacy_switches">Off until you turn them on</string>
     <string name="privacy_incognito">Incognito</string>
-    <string name="privacy_incognito_sub">Learning stays off everywhere until you switch this back. Also in the long-press space menu; the space bar shows it while it\'s on.</string>
+    <string name="privacy_incognito_sub">Learning stays off everywhere until you switch this back. Also in the long-press space menu. Apps can ask for it too, like Signal\'s incognito keyboard setting or a private browser tab, and get the same. The space bar shows it while it\'s on, and learned words aren\'t suggested.</string>
     <string name="privacy_facts">What CorkKeys can\'t do</string>
     <string name="privacy_fact_network">It has no internet permission, so Android blocks every network connection it could try to make.</string>
     <string name="privacy_fact_stored">Nothing you type is written anywhere. The word you are typing lives in memory until it goes into the app, then it\'s gone.</string>
@@ -171,4 +171,9 @@
     <string name="settings_voice_sub">Pick one of your other keyboards and a mic button shows in the tools row that switches to it. CorkKeys has no voice code of its own.</string>
     <string name="settings_voice_empty">No other keyboard is enabled. Enable one in Android\'s keyboard settings first.</string>
     <string name="settings_words_failed">The word list for %1$s could not be loaded, so suggestions, swipe and the spell checker are off for it. Please open an issue on GitHub.</string>
+    <string name="height_taller">Taller</string>
+    <string name="height_custom">Custom</string>
+    <string name="height_custom_value">%1$d dp per row</string>
+    <string name="height_custom_title">Row height</string>
+    <string name="height_custom_note">Normal is 54 dp, Tall 60, Taller 68. The keys never take more than about two fifths of the screen, a third in landscape, so very tall rows stop growing there.</string>
 </resources>
