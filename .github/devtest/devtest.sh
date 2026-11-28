@@ -1,0 +1,348 @@
+#!/usr/bin/env bash
+# Device test for CorkKeys on an emulator, run by .github/workflows/devtest.yml when the devtest
+# branch is pushed. It installs the debug build, makes it the keyboard, types through it by
+# tapping the keys TalkBack sees (uiautomator's dump of the keyboard window), swipes, rotates,
+# switches modes and themes, takes screenshots, and checks Android's app-ops record for
+# clipboard reads. Results go to devtest/: results.txt, steps.txt, screenshots and UI dumps.
+#
+# It never exits early on a failed check: every check is recorded and the run carries on.
+set -uo pipefail
+export LC_ALL=C
+
+missing=""
+for c in adb python3 awk sed; do
+    command -v "$c" >/dev/null 2>&1 || missing="$missing $c"
+done
+if [ -n "$missing" ]; then
+    printf 'Missing commands:%s\n' "$missing" >&2
+    exit 1
+fi
+
+here=$(cd -- "$(dirname -- "$0")" && pwd)
+ui="$here/ui.py"
+pkg=io.github.nullangst.corkkeys.debug
+ime="$pkg/io.github.nullangst.corkkeys.KeyboardService"
+out=devtest
+mkdir -p "$out"
+: > "$out/results.txt"
+: > "$out/steps.txt"
+keys_file="$out/keys.tsv"
+hint="Type something here"
+
+log() { printf '%s\n' "$*" | tee -a "$out/steps.txt"; }
+
+pass() { printf 'PASS %s\n' "$1" | tee -a "$out/results.txt"; }
+fail() { printf 'FAIL %s: %s\n' "$1" "$2" | tee -a "$out/results.txt"; }
+
+# check <name> <want> <got>
+check() {
+    if [ "$2" = "$3" ]; then pass "$1"; else fail "$1" "wanted [$2] got [$3]"; fi
+}
+
+shot() { adb exec-out screencap -p > "$out/$1.png"; }
+
+dump() {
+    adb shell uiautomator dump --windows /sdcard/ui.xml >/dev/null 2>&1 || adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1
+    adb pull /sdcard/ui.xml "$out/$1.xml" >/dev/null 2>&1
+}
+
+# Reads the keyboard's keys from a fresh dump into keys.tsv.
+read_keys() {
+    dump "$1"
+    python3 "$ui" keys "$out/$1.xml" "$pkg" > "$keys_file"
+}
+
+field_text() {
+    dump field
+    t=$(python3 "$ui" text "$out/field.xml")
+    [ "$t" = "$hint" ] && t=""
+    printf '%s' "$t"
+}
+
+# key_xy <description>: the centre of a key, matched exactly, then ignoring case, then as a prefix.
+key_xy() {
+    awk -F '\t' -v d="$1" '
+        $1 == d { print $2, $3; found = 1; exit }
+        tolower($1) == tolower(d) && !best { best = $2 " " $3 }
+        index($1, d) == 1 && !pre { pre = $2 " " $3 }
+        END { if (!found) { if (best) print best; else if (pre) print pre } }
+    ' "$keys_file"
+}
+
+tap_key() {
+    xy=$(key_xy "$1")
+    if [ -z "$xy" ]; then
+        log "no key for [$1]"
+        return 1
+    fi
+    # Word splitting wanted: "x y".
+    # shellcheck disable=SC2086
+    adb shell input tap $xy
+}
+
+# type_text <text>: one tap per character, space by the Space key.
+type_text() {
+    s=$1
+    while [ -n "$s" ]; do
+        c=${s:0:1}
+        s=${s:1}
+        if [ "$c" = " " ]; then tap_key "Space" || true; else tap_key "$c" || true; fi
+    done
+    sleep 1
+}
+
+clear_field() {
+    adb shell input keyevent KEYCODE_MOVE_END
+    # shellcheck disable=SC2046
+    adb shell input keyevent $(printf '67 %.0s' $(seq 1 60))
+    sleep 1
+}
+
+# prefs <name=value>...: writes the keyboard's settings file (device-protected storage) and
+# restarts the app so the keyboard reads it. Values true/false are booleans, the rest strings.
+prefs() {
+    tmp=$(mktemp "${TMPDIR:-/tmp}/prefs.XXXXXX")
+    {
+        printf '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>\n<map>\n'
+        for kv in "$@"; do
+            k=${kv%%=*}
+            v=${kv#*=}
+            case "$v" in
+                true | false) printf '    <boolean name="%s" value="%s" />\n' "$k" "$v" ;;
+                *) printf '    <string name="%s">%s</string>\n' "$k" "$v" ;;
+            esac
+        done
+        printf '</map>\n'
+    } > "$tmp"
+    adb shell am force-stop "$pkg"
+    adb push "$tmp" /data/local/tmp/settings.xml >/dev/null
+    adb shell "run-as $pkg sh -c 'mkdir -p /data/user_de/0/$pkg/shared_prefs && cp /data/local/tmp/settings.xml /data/user_de/0/$pkg/shared_prefs/settings.xml'"
+    rm -f -- "$tmp"
+    adb shell ime set "$ime" >/dev/null
+}
+
+open_field() {
+    adb shell am start -W -n "$pkg/io.github.nullangst.corkkeys.SetupActivity" >/dev/null
+    sleep 3
+    dump setup
+    xy=$(python3 "$ui" field "$out/setup.xml")
+    if [ -z "$xy" ]; then
+        log "no text field on the setup screen"
+        return 1
+    fi
+    # shellcheck disable=SC2086
+    adb shell input tap $xy
+    sleep 3
+}
+
+# swipe_word <word>: one finger path through the word's key centres. Every "input motionevent"
+# starts a new process, so points are few and far apart: two per stroke. Many short steps would be
+# slow enough for the first key's long-press to fire before the finger left it.
+swipe_word() {
+    pts=""
+    for ((i = 0; i < ${#1}; i++)); do
+        xy=$(key_xy "${1:i:1}")
+        [ -n "$xy" ] && pts="$pts $xy"
+    done
+    # shellcheck disable=SC2086
+    cmds=$(printf '%s\n' $pts | paste -d ' ' - - | awk '
+        { x[NR] = $1; y[NR] = $2 }
+        END {
+            printf "input motionevent DOWN %d %d", x[1], y[1]
+            for (i = 2; i <= NR; i++)
+                for (s = 1; s <= 2; s++)
+                    printf "; input motionevent MOVE %d %d", x[i-1] + (x[i] - x[i-1]) * s / 2, y[i-1] + (y[i] - y[i-1]) * s / 2
+            printf "; input motionevent UP %d %d\n", x[NR], y[NR]
+        }')
+    adb shell "$cmds"
+    sleep 2
+}
+
+# widths <name>: checks the letter rows reach both edges of the screen, minus the side insets.
+widths() {
+    # The current width, which follows rotation (wm size always reports portrait).
+    w=$(adb shell dumpsys window displays | grep -o 'cur=[0-9]*x[0-9]*' | head -n 1 | sed 's/cur=//; s/x.*//')
+    left=$(awk -F '\t' 'length($1) == 1 && $1 ~ /[a-z]/ { if (min == "" || $4 < min) min = $4 } END { print min }' "$keys_file")
+    right=$(awk -F '\t' 'length($1) == 1 && $1 ~ /[a-z]/ { if ($6 > max) max = $6 } END { print max }' "$keys_file")
+    log "$1: screen width $w, letter keys from $left to $right"
+    if [ -n "$left" ] && [ -n "$right" ] && [ "$left" -le 200 ] && [ "$right" -ge $((w - 200)) ]; then
+        pass "$1 keys span the width"
+    else
+        fail "$1 keys span the width" "screen $w, keys $left to $right"
+    fi
+}
+
+clip_ops() { adb shell cmd appops get "$pkg" READ_CLIPBOARD 2>&1 | tr -s ' \n' ' '; }
+
+# ---- Setup ----
+
+# Root, so the test can open the app's own (unexported) setup and privacy screens.
+adb root >/dev/null 2>&1 || true
+sleep 3
+adb wait-for-device
+log "Android $(adb shell getprop ro.build.version.release) (API $(adb shell getprop ro.build.version.sdk)), root: $(adb shell id -u)"
+adb install -r -t app/build/outputs/apk/debug/app-debug.apk >/dev/null
+# The emulator has a hardware keyboard; without this Android hides every on-screen keyboard.
+adb shell settings put secure show_ime_with_hard_keyboard 1
+adb shell ime enable "$ime" >/dev/null
+adb shell ime set "$ime" >/dev/null
+check "CorkKeys is the keyboard" "$ime" "$(adb shell settings get secure default_input_method | tr -d '\r')"
+
+# ---- 1. Plain keyboard ----
+
+prefs
+open_field
+shot 01-plain-portrait
+read_keys 01-plain-portrait
+n=$(wc -l < "$keys_file")
+log "keys found: $n"
+if [ "$n" -ge 30 ]; then pass "keyboard window visible to accessibility"; else fail "keyboard window visible to accessibility" "$n nodes"; fi
+widths "portrait"
+
+type_text "hello world"
+check "typing by taps" "hello world" "$(field_text)"
+clear_field
+
+type_text "hi  "
+check "double-space period" "hi. " "$(field_text)"
+clear_field
+
+before=$(clip_ops)
+log "clipboard app-ops before Paste: $before"
+tap_key "Paste" || true
+sleep 1
+after=$(clip_ops)
+log "clipboard app-ops after Paste: $after"
+check "no clipboard read when Paste is handled by the app" "$before" "$after"
+clear_field
+
+tap_key "Symbols" || true
+sleep 1
+shot 02-symbols
+read_keys 02-symbols
+tap_key "More symbols" || true
+sleep 1
+shot 03-symbols-more
+read_keys 03-symbols-more
+tap_key "Letters" || true
+sleep 1
+read_keys 01b-letters
+
+xy=$(key_xy "e")
+# shellcheck disable=SC2086
+[ -n "$xy" ] && adb shell input swipe $xy $xy 900 &
+sleep 0.7
+shot 04-long-press-e
+wait
+sleep 1
+log "after long-press on e: [$(field_text)]"
+check "long-press types the corner symbol" "|" "$(field_text)"
+clear_field
+
+# ---- 2. Suggestions and autocorrect ----
+
+prefs suggestions=true autocorrect=true
+open_field
+read_keys 05-suggestions
+type_text "teh"
+shot 05-suggestions-teh
+type_text " "
+check "autocorrect teh" "the " "$(field_text)"
+tap_key "Delete" || true
+sleep 1
+check "backspace undoes autocorrect" "teh" "$(field_text)"
+clear_field
+
+# ---- 3. Swipe ----
+
+prefs suggestions=true swipe=true
+open_field
+read_keys 06-swipe
+# The word lists load in the background the first time; give them a moment.
+sleep 4
+swipe_word "hello"
+shot 06-swipe-hello
+got=$(field_text)
+log "after swiping hello: [$got]"
+check "swipe hello" "hello" "$(printf '%s' "$got" | tr '[:upper:]' '[:lower:]' | sed 's/ *$//')"
+swipe_word "world"
+got=$(field_text)
+log "after swiping world: [$got]"
+check "swipe adds a space between words" "hello world" "$(printf '%s' "$got" | tr '[:upper:]' '[:lower:]' | sed 's/ *$//')"
+clear_field
+
+# ---- 4. German layout ----
+
+prefs languages=en,de current=de
+open_field
+shot 07-german
+read_keys 07-german
+if [ -n "$(key_xy "ü")" ] && [ -n "$(key_xy "ä")" ]; then pass "German layout has ü and ä"; else fail "German layout has ü and ä" "missing"; fi
+
+# ---- 5. Modes ----
+
+prefs mode=ONE_RIGHT
+open_field
+shot 08-one-handed-right
+prefs mode=FLOATING
+open_field
+shot 09-floating
+read_keys 09-floating
+widths_floating=$(awk -F '\t' 'length($1) == 1 && $1 ~ /[a-z]/ { if (min == "" || $4 < min) min = $4; if ($6 > max) max = $6 } END { print max - min }' "$keys_file")
+log "floating keys span $widths_floating px"
+type_text "float"
+check "typing on the floating keyboard" "float" "$(field_text)"
+clear_field
+
+# ---- 6. Landscape and navigation ----
+
+prefs
+adb shell settings put system accelerometer_rotation 0
+adb shell settings put system user_rotation 1
+sleep 3
+open_field
+shot 10-landscape
+read_keys 10-landscape
+widths "landscape"
+type_text "rotate"
+check "typing in landscape" "rotate" "$(field_text)"
+clear_field
+adb shell settings put system user_rotation 0
+sleep 2
+
+adb shell cmd overlay enable com.android.internal.systemui.navbar.threebutton >/dev/null 2>&1 || true
+sleep 3
+open_field
+shot 11-three-button
+read_keys 11-three-button
+widths "three-button navigation"
+adb shell cmd overlay enable com.android.internal.systemui.navbar.gestural >/dev/null 2>&1 || true
+sleep 2
+
+# ---- 7. Themes ----
+
+for t in light dark verdigris kawaii_light kawaii_dark material; do
+    prefs theme="$t"
+    open_field
+    shot "12-theme-$t"
+done
+prefs theme=dark bordered=false
+open_field
+shot 13-theme-dark-flat
+
+# ---- 8. Pages ----
+
+adb shell am start -W -n "$pkg/io.github.nullangst.corkkeys.SettingsActivity" >/dev/null
+sleep 2
+shot 14-settings
+adb shell am start -W -n "$pkg/io.github.nullangst.corkkeys.PrivacyActivity" >/dev/null 2>&1 || true
+sleep 2
+shot 15-privacy
+
+adb logcat -d -b crash > "$out/crash.txt" 2>&1 || true
+if [ -s "$out/crash.txt" ] && grep -q "$pkg" "$out/crash.txt"; then fail "no crashes" "see crash.txt"; else pass "no crashes"; fi
+
+log "done"
+grep -c '^PASS' "$out/results.txt" | sed 's/^/passed: /' | tee -a "$out/steps.txt"
+grep -c '^FAIL' "$out/results.txt" | sed 's/^/failed: /' | tee -a "$out/steps.txt"
+exit 0
