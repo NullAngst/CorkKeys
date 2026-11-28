@@ -350,6 +350,7 @@ open_field
 shot 10-landscape
 read_keys 10-landscape
 widths "landscape"
+log "keyboard inset as Android records it: $(adb shell dumpsys window | grep -m 2 -E 'type=ime|InsetsSource.*ime' | tr -s ' ' | tr '\n' ' ')"
 type_text "rotate"
 check "typing in landscape" "rotate" "$(field_text)"
 clear_field
