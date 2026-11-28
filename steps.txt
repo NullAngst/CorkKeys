@@ -1,0 +1,47 @@
+Android 15 (API 35), root: 0
+word lists in the APK:
+ 4588474  Defl:N  1935256  58% 1981-01-01 01:01 a574fda2  assets/words/de.txt
+     761  Defl:N      376  51% 1981-01-01 01:01 04d7b1ab  assets/words/de_extra.txt
+ 3867807  Defl:N  1636226  58% 1981-01-01 01:01 0293ce30  assets/words/en.txt
+    1234  Defl:N      481  61% 1981-01-01 01:01 c065b196  assets/words/en_extra.txt
+ 3965102  Defl:N  1493931  62% 1981-01-01 01:01 5c69095f  assets/words/es.txt
+     764  Defl:N      361  53% 1981-01-01 01:01 3adb229b  assets/words/es_extra.txt
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+keys found: 48
+portrait: screen width 1080, letter keys from 0 to 1080
+after long-press on e: [|]
+memory, plain keyboard:  Dalvik Heap 3132 3072 44 144 4096 6118 3091 3027 | TOTAL PSS: 49738 TOTAL RSS: 128760 TOTAL SWAP PSS: 13706
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+05-suggestion-shows: [the] showed after 2 s
+memory, English list loaded:  Dalvik Heap 41400 41332 48 95 42368 42824 21412 21412 | TOTAL PSS: 98515 TOTAL RSS: 196144 TOTAL SWAP PSS: 216
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+06-lists-ready: [hello] showed after 2 s
+after swiping hello: [hello]
+after swiping world: [hello world]
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+07-german-suggestion: [schön] showed after 2 s
+memory, English and German lists loaded:  Dalvik Heap 62789 62720 48 95 63756 67404 42828 24576 | TOTAL PSS: 119676 TOTAL RSS: 218224 TOTAL SWAP PSS: 217
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+floating keys span 864 px
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+landscape: screen width 2400, letter keys from 136 to 2400
+keyboard inset as Android records it:  InsetsSource id=3 type=ime frame=[136,503][2400,1080] visibleFrame=[136,503][2400,1080] visible=true flags= sideHint=BOTTOM boundingRects=null  InsetsSourceControl: {3 mType=ime mSurfacePosition=Point(136, 74) mInsetsHint=Insets{left=0, top=0, right=0, bottom=577}} 
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+three-button navigation: screen width 1080, letter keys from 0 to 1080
+clipboard app-ops before Paste: No operations. Default mode: allow 
+clipboard app-ops after Paste: No operations. Default mode: allow 
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+app files: clips.bin 
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+current keyboard: io.github.nullangst.corkkeys.debug/io.github.nullangst.corkkeys.KeyboardService (subtype 38405219)
+done
+passed: 34
+failed: 0

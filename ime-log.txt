@@ -1,0 +1,337 @@
+--------- beginning of system
+11-28 05:12:31.652   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: Session failed to close due to remote exception
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: android.os.DeadObjectException
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at android.os.BinderProxy.transactNative(Native Method)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.internal.inputmethod.IInputMethodSession$Stub$Proxy.finishSession(IInputMethodSession.java:356)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.finishSessionLocked(InputMethodManagerService.java:2600)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionLocked(InputMethodManagerService.java:2572)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.onClientRemoved(InputMethodManagerService.java:1879)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.lambda$new$1(InputMethodManagerService.java:1314)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.$r8$lambda$RiP22qBKRNfsNzlNiU0kgFlcUmI(InputMethodManagerService.java:0)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService$$ExternalSyntheticLambda2.onClientRemoved(R8$$SyntheticClass:0)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.removeClientAsBinder(ClientController.java:113)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.lambda$addClient$0(ClientController.java:64)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.$r8$lambda$eF4cD2NQlJ6H-Idt0s1NiLWRSeA(ClientController.java:0)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController$$ExternalSyntheticLambda0.binderDied(R8$$SyntheticClass:0)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at android.os.IBinder$DeathRecipient.binderDied(IBinder.java:333)
+11-28 05:13:34.094   557  1697 W InputMethodManagerService: 	at android.os.BinderProxy.sendDeathNotice(BinderProxy.java:726)
+--------- beginning of main
+11-28 05:13:34.094   557  1697 I ImeTracker: io.github.nullangst.corkkeys.debug:b976e67e: onRequestHide at ORIGIN_SERVER reason HIDE_REMOVE_CLIENT fromUser false
+11-28 05:13:34.377   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:c4384729: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:13:34.380   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:c4384729: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:13:34.888   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:13:38.797   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:8bec806e: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:13:38.797   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:8bec806e: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:13:43.809  4650  4650 I ImeTracker: io.github.nullangst.corkkeys.debug:d37f3533: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:13:44.095   557   557 I ImeTracker: io.github.nullangst.corkkeys.debug:b976e67e: setFinished at PHASE_SERVER_SHOULD_HIDE with STATUS_TIMEOUT
+11-28 05:13:44.554  4650  4650 I ImeTracker: io.github.nullangst.corkkeys.debug:d37f3533: onShown
+11-28 05:13:59.637   557   557 W InputMethodManagerService: Session failed to close due to remote exception
+11-28 05:13:59.637   557   557 W InputMethodManagerService: android.os.DeadObjectException
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transactNative(Native Method)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.internal.inputmethod.IInputMethodSession$Stub$Proxy.finishSession(IInputMethodSession.java:356)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.finishSessionLocked(InputMethodManagerService.java:2600)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionLocked(InputMethodManagerService.java:2572)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.lambda$clearClientSessionsLocked$9(InputMethodManagerService.java:2633)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.$r8$lambda$8ZQ2nu2-aBxC49RVGN6PZWSEoPg(InputMethodManagerService.java:0)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService$$ExternalSyntheticLambda14.accept(R8$$SyntheticClass:0)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.forAllClients(ClientController.java:132)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionsLocked(InputMethodManagerService.java:2636)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.clearCurMethodAndSessions(InputMethodBindingController.java:486)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.-$$Nest$mclearCurMethodAndSessions(InputMethodBindingController.java:0)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController$2.onServiceDisconnected(InputMethodBindingController.java:438)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:2203)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:2243)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at android.os.Looper.loop(Looper.java:317)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.run(SystemServer.java:973)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.main(SystemServer.java:657)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at java.lang.reflect.Method.invoke(Native Method)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-28 05:13:59.637   557   557 W InputMethodManagerService: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:864)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: Session failed to close due to remote exception
+11-28 05:13:59.663   557   557 W InputMethodManagerService: android.os.DeadObjectException
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transactNative(Native Method)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.internal.inputmethod.IInputMethodSession$Stub$Proxy.finishSession(IInputMethodSession.java:356)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.finishSessionLocked(InputMethodManagerService.java:2600)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionLocked(InputMethodManagerService.java:2572)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.lambda$clearClientSessionsLocked$9(InputMethodManagerService.java:2633)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.$r8$lambda$8ZQ2nu2-aBxC49RVGN6PZWSEoPg(InputMethodManagerService.java:0)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService$$ExternalSyntheticLambda14.accept(R8$$SyntheticClass:0)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.forAllClients(ClientController.java:132)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionsLocked(InputMethodManagerService.java:2636)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.clearCurMethodAndSessions(InputMethodBindingController.java:486)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.-$$Nest$mclearCurMethodAndSessions(InputMethodBindingController.java:0)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController$2.onServiceDisconnected(InputMethodBindingController.java:438)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:2203)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:2243)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at android.os.Looper.loop(Looper.java:317)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.run(SystemServer.java:973)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.main(SystemServer.java:657)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at java.lang.reflect.Method.invoke(Native Method)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-28 05:13:59.663   557   557 W InputMethodManagerService: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:864)
+11-28 05:13:59.955   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:8080764d: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:14:00.000   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:8080764d: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:14:00.338   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:14:03.648   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:cf3381c4: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:14:03.649   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:cf3381c4: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:14:08.587  4969  4969 I ImeTracker: io.github.nullangst.corkkeys.debug:fa549517: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:14:09.209  4969  4969 I ImeTracker: io.github.nullangst.corkkeys.debug:fa549517: onShown
+11-28 05:14:37.592   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:4653c55e: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:14:37.592   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:4653c55e: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:14:37.829   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:14:41.707   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:96900fdb: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:14:41.710   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:96900fdb: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:14:46.601  5267  5267 I ImeTracker: io.github.nullangst.corkkeys.debug:6f21dd5: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:14:47.445  5267  5267 I ImeTracker: io.github.nullangst.corkkeys.debug:6f21dd5: onShown
+11-28 05:14:56.512   557   557 W InputMethodManagerService: Session failed to close due to remote exception
+11-28 05:14:56.512   557   557 W InputMethodManagerService: android.os.DeadObjectException
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transactNative(Native Method)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.internal.inputmethod.IInputMethodSession$Stub$Proxy.finishSession(IInputMethodSession.java:356)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.finishSessionLocked(InputMethodManagerService.java:2600)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionLocked(InputMethodManagerService.java:2572)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.lambda$clearClientSessionsLocked$9(InputMethodManagerService.java:2633)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.$r8$lambda$8ZQ2nu2-aBxC49RVGN6PZWSEoPg(InputMethodManagerService.java:0)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService$$ExternalSyntheticLambda14.accept(R8$$SyntheticClass:0)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.forAllClients(ClientController.java:132)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionsLocked(InputMethodManagerService.java:2636)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.clearCurMethodAndSessions(InputMethodBindingController.java:486)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.-$$Nest$mclearCurMethodAndSessions(InputMethodBindingController.java:0)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController$2.onServiceDisconnected(InputMethodBindingController.java:438)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:2203)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:2243)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at android.os.Looper.loop(Looper.java:317)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.run(SystemServer.java:973)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.main(SystemServer.java:657)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at java.lang.reflect.Method.invoke(Native Method)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-28 05:14:56.512   557   557 W InputMethodManagerService: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:864)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: Session failed to close due to remote exception
+11-28 05:14:56.525   557   557 W InputMethodManagerService: android.os.DeadObjectException
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transactNative(Native Method)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.internal.inputmethod.IInputMethodSession$Stub$Proxy.finishSession(IInputMethodSession.java:356)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.finishSessionLocked(InputMethodManagerService.java:2600)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionLocked(InputMethodManagerService.java:2572)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.lambda$clearClientSessionsLocked$9(InputMethodManagerService.java:2633)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.$r8$lambda$8ZQ2nu2-aBxC49RVGN6PZWSEoPg(InputMethodManagerService.java:0)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService$$ExternalSyntheticLambda14.accept(R8$$SyntheticClass:0)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.forAllClients(ClientController.java:132)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionsLocked(InputMethodManagerService.java:2636)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.clearCurMethodAndSessions(InputMethodBindingController.java:486)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.-$$Nest$mclearCurMethodAndSessions(InputMethodBindingController.java:0)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController$2.onServiceDisconnected(InputMethodBindingController.java:438)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:2203)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:2243)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at android.os.Looper.loop(Looper.java:317)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.run(SystemServer.java:973)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.main(SystemServer.java:657)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at java.lang.reflect.Method.invoke(Native Method)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-28 05:14:56.525   557   557 W InputMethodManagerService: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:864)
+11-28 05:14:56.792   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:e7273819: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:14:56.793   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:e7273819: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:14:57.120   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:15:00.527   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:2cf949d9: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:15:00.527   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:2cf949d9: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:15:05.497  5495  5495 I ImeTracker: io.github.nullangst.corkkeys.debug:1184797: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:15:06.201  5495  5495 I ImeTracker: io.github.nullangst.corkkeys.debug:1184797: onShown
+11-28 05:15:09.108   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:d4cf8a4f: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:15:09.108   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:d4cf8a4f: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:15:09.308   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:15:12.804   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:85585862: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:15:12.804   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:85585862: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:15:17.778  5601  5601 I ImeTracker: io.github.nullangst.corkkeys.debug:814da8a2: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:15:18.548  5601  5601 I ImeTracker: io.github.nullangst.corkkeys.debug:814da8a2: onShown
+11-28 05:15:27.889   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:6ead0a06: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:15:27.892   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:6ead0a06: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:15:28.078   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:15:31.677   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:10541019: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:15:31.677   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:10541019: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:15:36.658  5775  5775 I ImeTracker: io.github.nullangst.corkkeys.debug:eea38595: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:15:37.423  5775  5775 I ImeTracker: io.github.nullangst.corkkeys.debug:eea38595: onShown
+11-28 05:15:39.935   557   557 W InputMethodManagerService: Session failed to close due to remote exception
+11-28 05:15:39.935   557   557 W InputMethodManagerService: android.os.DeadObjectException
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transactNative(Native Method)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.internal.inputmethod.IInputMethodSession$Stub$Proxy.finishSession(IInputMethodSession.java:356)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.finishSessionLocked(InputMethodManagerService.java:2600)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionLocked(InputMethodManagerService.java:2572)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.lambda$clearClientSessionsLocked$9(InputMethodManagerService.java:2633)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.$r8$lambda$8ZQ2nu2-aBxC49RVGN6PZWSEoPg(InputMethodManagerService.java:0)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService$$ExternalSyntheticLambda14.accept(R8$$SyntheticClass:0)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.forAllClients(ClientController.java:132)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionsLocked(InputMethodManagerService.java:2636)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.clearCurMethodAndSessions(InputMethodBindingController.java:486)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.-$$Nest$mclearCurMethodAndSessions(InputMethodBindingController.java:0)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController$2.onServiceDisconnected(InputMethodBindingController.java:438)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:2203)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:2243)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at android.os.Looper.loop(Looper.java:317)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.run(SystemServer.java:973)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.main(SystemServer.java:657)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at java.lang.reflect.Method.invoke(Native Method)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-28 05:15:39.935   557   557 W InputMethodManagerService: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:864)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: Session failed to close due to remote exception
+11-28 05:15:39.972   557   557 W InputMethodManagerService: android.os.DeadObjectException
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transactNative(Native Method)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.internal.inputmethod.IInputMethodSession$Stub$Proxy.finishSession(IInputMethodSession.java:356)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.finishSessionLocked(InputMethodManagerService.java:2600)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionLocked(InputMethodManagerService.java:2572)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.lambda$clearClientSessionsLocked$9(InputMethodManagerService.java:2633)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.$r8$lambda$8ZQ2nu2-aBxC49RVGN6PZWSEoPg(InputMethodManagerService.java:0)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService$$ExternalSyntheticLambda14.accept(R8$$SyntheticClass:0)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.forAllClients(ClientController.java:132)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionsLocked(InputMethodManagerService.java:2636)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.clearCurMethodAndSessions(InputMethodBindingController.java:486)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.-$$Nest$mclearCurMethodAndSessions(InputMethodBindingController.java:0)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController$2.onServiceDisconnected(InputMethodBindingController.java:438)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:2203)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:2243)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at android.os.Looper.loop(Looper.java:317)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.run(SystemServer.java:973)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.main(SystemServer.java:657)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at java.lang.reflect.Method.invoke(Native Method)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-28 05:15:39.972   557   557 W InputMethodManagerService: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:864)
+11-28 05:15:40.363   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:eba3fb57: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:15:40.364   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:eba3fb57: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:15:40.504   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:15:44.020   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:204671b0: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:15:44.020   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:204671b0: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:15:48.996  5880  5880 I ImeTracker: io.github.nullangst.corkkeys.debug:55d1989: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:15:49.735  5880  5880 I ImeTracker: io.github.nullangst.corkkeys.debug:55d1989: onShown
+11-28 05:15:59.280   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:53b71f59: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:15:59.280   557   675 I ImeTracker: com.google.android.apps.nexuslauncher:53b71f59: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:15:59.570   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:16:06.782   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:5603ec2c: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:16:06.782   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:5603ec2c: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:16:15.066  6047  6047 I ImeTracker: io.github.nullangst.corkkeys.debug:27e8931f: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:16:15.632  6047  6047 I ImeTracker: io.github.nullangst.corkkeys.debug:27e8931f: onShown
+11-28 05:16:25.365  6047  6047 I ImeTracker: io.github.nullangst.corkkeys.debug:eb0868f: onRequestShow at ORIGIN_IME reason RESET_NEW_CONFIGURATION fromUser false
+11-28 05:16:25.711   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:351daf7d: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:16:25.722   557  1697 I ImeTracker: io.github.nullangst.corkkeys.debug:eb0868f: onFailed at PHASE_WM_ABORT_SHOW_IME_POST_LAYOUT
+11-28 05:16:25.748  6047  6047 I ImeTracker: io.github.nullangst.corkkeys.debug:351daf7d: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+11-28 05:16:27.921   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:5e096ae7: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:16:27.921   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:5e096ae7: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:16:35.489  6047  6047 I ImeTracker: io.github.nullangst.corkkeys.debug:48555610: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:16:35.744  6047  6047 I ImeTracker: io.github.nullangst.corkkeys.debug:48555610: onShown
+11-28 05:16:40.806  6047  6047 I ImeTracker: io.github.nullangst.corkkeys.debug:852348ff: onRequestShow at ORIGIN_IME reason RESET_NEW_CONFIGURATION fromUser false
+11-28 05:16:40.833   557  2050 I ImeTracker: io.github.nullangst.corkkeys.debug:852348ff: onFailed at PHASE_WM_HAS_IME_INSETS_CONTROL_TARGET
+11-28 05:16:41.397   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:2df69399: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:16:41.406  6047  6047 I ImeTracker: io.github.nullangst.corkkeys.debug:2df69399: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+11-28 05:16:43.722   557   675 I ImeTracker: com.google.android.permissioncontroller:80e5b978: onRequestHide at ORIGIN_SERVER reason HIDE_ALWAYS_HIDDEN_STATE fromUser false
+11-28 05:16:43.722   557   675 I ImeTracker: com.google.android.permissioncontroller:80e5b978: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:16:44.601   557   675 I ImeTracker: com.google.android.contacts:1d7d05b: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:16:44.601   557   675 I ImeTracker: com.google.android.contacts:1d7d05b: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:16:49.730  6409  6409 I ImeTracker: com.google.android.contacts:168e61ee: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:16:49.948  6409  6409 I ImeTracker: com.google.android.contacts:168e61ee: onShown
+11-28 05:16:58.261  6047  6047 I ImeTracker: io.github.nullangst.corkkeys.debug:c49b4bc1: onRequestHide at ORIGIN_IME reason HIDE_SOFT_INPUT_BY_BACK_KEY fromUser true
+11-28 05:16:58.285  6409  6409 I ImeTracker: com.google.android.contacts:367de044: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED fromUser false
+11-28 05:16:58.288   557   675 I ImeTracker: com.google.android.contacts:367de044: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:16:58.292  6409  6409 I ImeTracker: io.github.nullangst.corkkeys.debug:c49b4bc1: onHidden
+11-28 05:16:58.499   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:17:02.221   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:1fc091f5: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:17:02.221   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:1fc091f5: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:17:07.208  6725  6725 I ImeTracker: io.github.nullangst.corkkeys.debug:fb811e18: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:17:07.821  6725  6725 I ImeTracker: io.github.nullangst.corkkeys.debug:fb811e18: onShown
+11-28 05:18:02.656   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:18:11.429  6409  6409 I ImeTracker: com.google.android.contacts:502c3d40: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:18:12.458  6409  6409 I ImeTracker: com.google.android.contacts:502c3d40: onShown
+11-28 05:19:18.946  7174  7174 I ImeTracker: io.github.nullangst.corkkeys.debug:aa733127: onRequestHide at ORIGIN_IME reason HIDE_SOFT_INPUT_BY_BACK_KEY fromUser true
+11-28 05:19:18.962  6409  6409 I ImeTracker: com.google.android.contacts:154148db: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED fromUser false
+11-28 05:19:18.962  6409  6409 I ImeTracker: io.github.nullangst.corkkeys.debug:aa733127: onHidden
+11-28 05:19:18.972   557   675 I ImeTracker: com.google.android.contacts:154148db: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:19:19.215   557   675 D InputMethodManagerService: Initializing Handwriting Spy
+11-28 05:19:28.221  6409  6409 I ImeTracker: com.google.android.contacts:62f168: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:19:28.914  6409  6409 I ImeTracker: com.google.android.contacts:62f168: onShown
+11-28 05:19:50.184  7642  7642 I ImeTracker: io.github.nullangst.corkkeys.debug:f1b8a6de: onRequestHide at ORIGIN_IME reason HIDE_SOFT_INPUT_BY_BACK_KEY fromUser true
+11-28 05:19:50.200  6409  6409 I ImeTracker: com.google.android.contacts:27c6b51a: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED fromUser false
+11-28 05:19:50.201  6409  6409 I ImeTracker: io.github.nullangst.corkkeys.debug:f1b8a6de: onHidden
+11-28 05:19:50.201   557   675 I ImeTracker: com.google.android.contacts:27c6b51a: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:19:50.219  6409  6409 I ImeTracker: com.google.android.contacts:31e6ebeb: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+11-28 05:19:50.220   557   675 I ImeTracker: com.google.android.contacts:31e6ebeb: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:19:54.299   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:d3ee533: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:19:54.299   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:d3ee533: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:19:59.258  7826  7826 I ImeTracker: io.github.nullangst.corkkeys.debug:9bf6fd34: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:19:59.919  7826  7826 I ImeTracker: io.github.nullangst.corkkeys.debug:9bf6fd34: onShown
+11-28 05:20:02.488   557   557 W InputMethodManagerService: Session failed to close due to remote exception
+11-28 05:20:02.488   557   557 W InputMethodManagerService: android.os.DeadObjectException
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transactNative(Native Method)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.internal.inputmethod.IInputMethodSession$Stub$Proxy.finishSession(IInputMethodSession.java:356)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.finishSessionLocked(InputMethodManagerService.java:2600)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionLocked(InputMethodManagerService.java:2572)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.lambda$clearClientSessionsLocked$9(InputMethodManagerService.java:2633)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.$r8$lambda$8ZQ2nu2-aBxC49RVGN6PZWSEoPg(InputMethodManagerService.java:0)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService$$ExternalSyntheticLambda14.accept(R8$$SyntheticClass:0)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.ClientController.forAllClients(ClientController.java:132)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodManagerService.clearClientSessionsLocked(InputMethodManagerService.java:2636)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.clearCurMethodAndSessions(InputMethodBindingController.java:486)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController.-$$Nest$mclearCurMethodAndSessions(InputMethodBindingController.java:0)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.inputmethod.InputMethodBindingController$2.onServiceDisconnected(InputMethodBindingController.java:438)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:2203)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:2243)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at android.os.Handler.handleCallback(Handler.java:959)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at android.os.Looper.loop(Looper.java:317)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.run(SystemServer.java:973)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.server.SystemServer.main(SystemServer.java:657)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at java.lang.reflect.Method.invoke(Native Method)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-28 05:20:02.488   557   557 W InputMethodManagerService: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:864)
+11-28 05:20:06.449   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:2a2203d2: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:20:06.449   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:2a2203d2: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:20:11.429  7929  7929 I ImeTracker: io.github.nullangst.corkkeys.debug:4a83efd7: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:20:12.118  7929  7929 I ImeTracker: io.github.nullangst.corkkeys.debug:4a83efd7: onShown
+11-28 05:20:18.436   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:a67d2d0b: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:20:18.436   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:a67d2d0b: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:20:23.392  8026  8026 I ImeTracker: io.github.nullangst.corkkeys.debug:55eff54e: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:20:24.063  8026  8026 I ImeTracker: io.github.nullangst.corkkeys.debug:55eff54e: onShown
+11-28 05:20:30.516   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:d5f8aa6c: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:20:30.517   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:d5f8aa6c: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:20:35.433  8120  8120 I ImeTracker: io.github.nullangst.corkkeys.debug:bfe3cf17: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:20:36.035  8120  8120 I ImeTracker: io.github.nullangst.corkkeys.debug:bfe3cf17: onShown
+11-28 05:20:42.678   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:4cdffd00: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:20:42.680   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:4cdffd00: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:20:47.656  8215  8215 I ImeTracker: io.github.nullangst.corkkeys.debug:2c5f2dc: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:20:48.285  8215  8215 I ImeTracker: io.github.nullangst.corkkeys.debug:2c5f2dc: onShown
+11-28 05:20:54.890   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:e801bb65: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:20:54.890   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:e801bb65: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:20:59.822  8329  8329 I ImeTracker: io.github.nullangst.corkkeys.debug:ad71de00: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:21:00.538  8329  8329 I ImeTracker: io.github.nullangst.corkkeys.debug:ad71de00: onShown
+11-28 05:21:07.055   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:6992ad10: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:21:07.071   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:6992ad10: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 05:21:12.015  8424  8424 I ImeTracker: io.github.nullangst.corkkeys.debug:b08f3110: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser true
+11-28 05:21:12.613  8424  8424 I ImeTracker: io.github.nullangst.corkkeys.debug:b08f3110: onShown
+11-28 05:21:15.964   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:877d3e73: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:21:16.046  8424  8424 I ImeTracker: io.github.nullangst.corkkeys.debug:877d3e73: onCancelled at PHASE_CLIENT_ANIMATION_CANCEL
+11-28 05:21:16.046  8424  8424 I ImeTracker: io.github.nullangst.corkkeys.debug:7bd514d0: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED fromUser false
+11-28 05:21:16.047  8424  8424 I ImeTracker: io.github.nullangst.corkkeys.debug:7bd514d0: onFailed at PHASE_CLIENT_VIEW_SERVED
+11-28 05:21:18.094   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:c06dfd2a: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 05:21:18.095   557   675 I ImeTracker: io.github.nullangst.corkkeys.debug:c06dfd2a: onCancelled at PHASE_SERVER_SHOULD_HIDE

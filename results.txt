@@ -1,0 +1,34 @@
+PASS CorkKeys is the keyboard
+PASS keyboard window visible to accessibility
+PASS portrait keys span the width
+PASS typing by taps
+PASS double-space period
+PASS long-press types the corner symbol
+PASS 05-suggestion-shows
+PASS autocorrect teh
+PASS backspace undoes autocorrect
+PASS 06-lists-ready
+PASS swipe hello
+PASS swipe adds a space between words
+PASS German layout has ü and ä
+PASS 07-german-suggestion
+PASS typing on the floating keyboard
+PASS typing on a custom-height keyboard
+PASS landscape keys span the width
+PASS typing in landscape
+PASS three-button navigation keys span the width
+PASS Paste in another app reads no clipboard
+PASS comma long-press opens emoji
+PASS emoji types
+PASS backspace takes the emoji
+PASS flag with joiners types
+PASS one backspace takes the whole flag
+PASS skin tone picker
+PASS recent emoji row
+PASS history button shows
+PASS a copy shows in clipboard history
+PASS a clip pastes from history
+PASS history saved for a restart
+PASS saved history is encrypted
+PASS history survives a restart
+PASS no crashes
