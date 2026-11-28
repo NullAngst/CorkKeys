@@ -1,18 +1,28 @@
 # Changes
 
-2026.11.27 - First build
+2026.11.27 - Suggestions, swipe, modes and docs
+
+* Word lists for English (US), German and Spanish from aosp-dictionaries (Leipzig Corpora Collection, CC BY 4.0), 250,000 words each, with extra lists for swear words and slurs
+* Suggestions with three slots, autocorrect that never touches words in the lists, undo with backspace, long-press a suggestion to remove it
+* Learned words on the Privacy page, off by default, deleted when switched off; a page to view and delete learned and removed words
+* Two languages at once, and Android's spell checker service from the same lists
+* Swipe typing with a from-scratch SHARK2 decoder and a trail in the theme's accent colour
+* One-handed mode, floating keyboard, voice keyboard handoff
+* Word list credit in the About section of settings
+* Full README, PRIVACY.md, maintenance.md and this file
+
+Reasons for changes: v0.5.0 went out with only the plain keyboard, because the later pull requests merged into each other's branches instead of main. This brings the rest of the first build in.
+
+2026.11.27 - First build (v0.5.0)
 
 * Build setup matching Corkboard: Android Gradle Plugin 9, minSdk 29, target and compile SDK 37, R8 for release, debug builds installable next to release builds
 * CI: debug build, lint and unit tests on pushes and pull requests, plus checks that fail the build on any permission in the merged release manifest, any runtime library besides the Kotlin standard library, any logging call, or clipboard use outside Paste.kt
 * Release job on manual dispatch from a tag only, signed APK with build provenance attestation attached with gh release upload
-* Word list tooling and workflow, and English (US), German and Spanish lists from aosp-dictionaries (Leipzig Corpora Collection, CC BY 4.0), 250,000 words each, with extra lists for swear words and slurs
+* Word list tooling and the word lists workflow
 * Layouts: English QWERTY, German QWERTZ, Spanish, Gboard's long-press symbol map with accents in the same popup, two symbol pages, number and phone pads, optional number row
 * Shift and caps lock, automatic capitals, double-space period, space bar cursor, backspace repeat and backspace by word
 * Long-press space language menu with incognito, the Paste button, the editing panel
-* Suggestions, autocorrect that never touches words in the lists, learned and removed words, two languages at once, Android spell checker service
-* Swipe typing with a from-scratch SHARK2 decoder and a trail in the theme's accent colour
-* One-handed mode, floating keyboard, voice keyboard handoff
 * Six themes matching Corkboard, bordered or flat keys, three heights, TalkBack support, direct boot
-* Setup screen, settings, Privacy page, README, PRIVACY.md and maintenance.md
+* Setup screen, settings and the Privacy page
 
 Reasons for changes: first build of CorkKeys, a from-scratch replacement for OpenBoard, which no longer works well on current Android.

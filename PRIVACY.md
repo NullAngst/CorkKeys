@@ -57,5 +57,5 @@ Its window covers the screen so it can move anywhere, but only the keyboard's ow
 The app uses Android's own APIs and the Kotlin standard library, nothing else. CI checks the release build's runtime libraries (`.github/scripts/check_runtime_deps.sh`). Releases are built by GitHub Actions from a tag and carry a signed build provenance attestation, so anyone can check an APK came from this source:
 
 ```
-gh attestation verify CorkKeys-v1.0.0.apk --repo NullAngst/CorkKeys
+gh attestation verify CorkKeys-v0.6.0.apk --repo NullAngst/CorkKeys
 ```

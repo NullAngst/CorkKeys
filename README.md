@@ -85,7 +85,7 @@ bash .github/scripts/check_clipboard.sh
 
 ## Signing
 
-Releases are signed by GitHub Actions with a keystore stored in repo secrets. Make it once:
+Releases are signed by GitHub Actions with a keystore stored in repo secrets. Make it once. `keytool` comes with a JDK; I use apt, so in my case that's `sudo apt install default-jdk-headless`, or whichever package your system calls it.
 
 1. `keytool -genkeypair -v -keystore corkkeys.jks -alias corkkeys -keyalg RSA -keysize 4096 -validity 10000`
 2. `base64 -w0 corkkeys.jks > corkkeys.jks.b64` (on macOS: `base64 -i corkkeys.jks -o corkkeys.jks.b64`)
@@ -93,23 +93,25 @@ Releases are signed by GitHub Actions with a keystore stored in repo secrets. Ma
    - `KEYSTORE_BASE64`: the contents of `corkkeys.jks.b64`
    - `KEYSTORE_PASSWORD`: the keystore password
    - `KEY_ALIAS`: `corkkeys`, or whichever alias you used
-   - `KEY_PASSWORD`: the key password
+   - `KEY_PASSWORD`: the key password. Newer JDKs don't ask for a separate one, so it's the same as the keystore password.
 4. Delete `corkkeys.jks.b64`.
+
+If a secret is wrong or missing, the release run stops at the "Rename APK" step with "Signed APK not found". Fix the secret and run it again on the same tag; it replaces the APK.
 
 BACK UP THE KEYSTORE AND ITS PASSWORDS. If it is lost, no future APK can install over the current one, and the only way forward is uninstalling the keyboard, which deletes your settings and learned words.
 
 ## Making a release
 
-1. Go to Releases, draft a new release, create a new tag there (like `v1.0.0`), and publish it.
+1. Go to Releases, draft a new release, create a new tag there (like `v0.6.0`), and publish it.
 2. Go to Actions, click the **build** workflow, click **Run workflow**.
 3. Pick that tag under "Use workflow from" and run it.
-4. The workflow builds from that tag and attaches the signed `CorkKeys-v1.0.0.apk` to the existing release, with a signed SLSA build provenance attestation.
+4. The workflow builds from that tag and attaches the signed `CorkKeys-v0.6.0.apk` to the existing release, with a signed SLSA build provenance attestation.
 
-Versions come from the tag: `v1.6.0` becomes versionName `1.6.0` and versionCode `10600`. The first release is `1.0.0`; after that, releases bump the minor number.
+Versions come from the tag: `v1.6.0` becomes versionName `1.6.0` and versionCode `10600`. Releases bump the minor number: `v0.5.0`, then `v0.6.0`, and so on.
 
 The workflow fails with a clear message if it was run on a branch instead of a tag, or if no release exists for that tag yet. Rerunning it on the same tag replaces the APK. Pushes to `main` and pull requests only build a debug APK, run lint and unit tests, and run the four checks above; nothing is released on a tag push.
 
-To check an APK's provenance: `gh attestation verify CorkKeys-v1.0.0.apk --repo NullAngst/CorkKeys`
+To check an APK's provenance: `gh attestation verify CorkKeys-v0.6.0.apk --repo NullAngst/CorkKeys`
 
 ## Credits and licence
 
