@@ -34,6 +34,19 @@ class PrefsTest {
     }
 
     @Test
+    fun customHeight() {
+        val p = Prefs(MapKeyValues())
+        assertEquals(KeyHeight.NORMAL.dp, p.rowDp)
+        p.height = KeyHeight.TALLER
+        assertEquals(68f, p.rowDp)
+        p.customRowDp = 80f
+        p.heightRaw = Prefs.CUSTOM
+        assertEquals(80f, p.rowDp)
+        p.customRowDp = 500f
+        assertEquals("kept inside the slider's range", Geometry.MAX_ROW_DP, p.rowDp)
+    }
+
+    @Test
     fun firstLanguageFollowsThePhone() {
         assertEquals(listOf("de"), Prefs(MapKeyValues(), "de").languages)
         assertEquals("es", Prefs(MapKeyValues(), "es").language)

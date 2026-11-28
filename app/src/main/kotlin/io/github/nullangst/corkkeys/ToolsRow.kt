@@ -22,6 +22,9 @@ import android.widget.LinearLayout
 class ToolsRow(ctx: Context, private val host: Host) : LinearLayout(ctx) {
     enum class Tool(val icon: Int, val desc: Int) {
         EDIT(R.drawable.ic_edit, R.string.cd_edit),
+        ONE_HANDED(R.drawable.ic_one_handed, R.string.cd_one_handed),
+        FLOATING(R.drawable.ic_floating, R.string.cd_floating),
+        VOICE(R.drawable.ic_mic, R.string.cd_voice),
         SETTINGS(R.drawable.ic_settings, R.string.cd_settings),
     }
 
@@ -46,6 +49,7 @@ class ToolsRow(ctx: Context, private val host: Host) : LinearLayout(ctx) {
             buttons[t] = b
             addView(b, LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f))
         }
+        setShown(Tool.VOICE, false)
     }
 
     fun applyPalette(p: Palette) {

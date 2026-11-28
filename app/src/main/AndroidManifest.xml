@@ -29,6 +29,21 @@
                 android:resource="@xml/method" />
         </service>
 
+        <!-- Android's spell checker service. Only Android can bind to it (BIND_TEXT_SERVICE), and it
+             only does once CorkKeys is picked as the spell checker in Android's settings. -->
+        <service
+            android:name=".SpellCheck"
+            android:exported="true"
+            android:label="@string/spell_checker_name"
+            android:permission="android.permission.BIND_TEXT_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.textservice.SpellCheckerService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.textservice.scs"
+                android:resource="@xml/spellchecker" />
+        </service>
+
         <!-- Settings, from the launcher. -->
         <activity
             android:name=".SettingsActivity"
@@ -50,5 +65,10 @@
             android:name=".PrivacyActivity"
             android:exported="false"
             android:label="@string/privacy_title" />
+
+        <activity
+            android:name=".WordListsActivity"
+            android:exported="false"
+            android:label="@string/words_title" />
     </application>
 </manifest>

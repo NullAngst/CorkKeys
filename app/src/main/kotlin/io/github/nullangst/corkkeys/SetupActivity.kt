@@ -84,6 +84,11 @@ class SetupActivity : Activity() {
                 hint = getString(R.string.setup_try_hint)
                 setTextColor(pal.text)
                 setHintTextColor(pal.textDim)
+                // Keep the box in sight above the keyboard, landscape included: once on focus, and
+                // again after the keyboard has slid in and the screen has been padded for it.
+                setOnFocusChangeListener { v, has ->
+                    if (has) for (delay in longArrayOf(0L, 350L, 800L)) scroll.postDelayed({ reveal(v) }, delay)
+                }
             }))
             add(padded(Ui.button(this, pal, getString(R.string.setup_open_settings)) {
                 startActivity(Intent(this, SettingsActivity::class.java).putExtra(SettingsActivity.EXTRA_FROM_SETUP, true))
@@ -91,6 +96,15 @@ class SetupActivity : Activity() {
             }))
         }
         spacer(24f)
+    }
+
+    /** Scrolls so [v] sits just under the top of the screen. */
+    private fun reveal(v: View) {
+        if (!v.isAttachedToWindow) return
+        val r = android.graphics.Rect()
+        v.getDrawingRect(r)
+        scroll.offsetDescendantRectToMyCoords(v, r)
+        scroll.smoothScrollTo(0, (r.top - scroll.paddingTop - Ui.dp(this, 16f)).coerceAtLeast(0))
     }
 
     private fun padded(v: View) = LinearLayout(this).apply {

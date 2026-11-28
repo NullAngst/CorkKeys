@@ -38,6 +38,14 @@ class FieldTest {
     }
 
     @Test
+    fun appsCanAskForIncognito() {
+        // Signal's incognito keyboard, Firefox private tabs: IME_FLAG_NO_PERSONALIZED_LEARNING.
+        assertTrue(Field.read(text, noLearningFlag).incognito(false))
+        assertTrue("switched on by hand", Field.read(text, 0).incognito(true))
+        assertFalse(Field.read(text, 0).incognito(false))
+    }
+
+    @Test
     fun noSuggestionsFlagAndItsSwitch() {
         val f = Field.read(text or 0x80000, 0)
         assertFalse(f.allowsSuggestions(false))

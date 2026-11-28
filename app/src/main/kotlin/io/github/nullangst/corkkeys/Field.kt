@@ -45,6 +45,9 @@ class FieldInfo(
     val allowsDoubleSpace: Boolean get() = text
     val allowsAutoCaps: Boolean get() = text
 
+    /** Incognito here: switched on by hand ([manual]), or asked for by the app. */
+    fun incognito(manual: Boolean): Boolean = manual || noLearning
+
     companion object {
         val PLAIN = FieldInfo(FieldKind.TEXT, false, false, false, Enter.NEWLINE, EditorInfo.IME_ACTION_NONE, InputType.TYPE_CLASS_TEXT, false)
     }

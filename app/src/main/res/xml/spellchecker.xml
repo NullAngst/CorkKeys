@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The spell checker, for the same three languages as the keyboard. -->
+<spell-checker xmlns:android="http://schemas.android.com/apk/res/android"
+    android:label="@string/spell_checker_name"
+    android:settingsActivity="io.github.nullangst.corkkeys.SettingsActivity">
+    <subtype
+        android:label="@string/lang_en"
+        android:languageTag="en-US"
+        android:subtypeLocale="en_US" />
+    <subtype
+        android:label="@string/lang_de"
+        android:languageTag="de"
+        android:subtypeLocale="de" />
+    <subtype
+        android:label="@string/lang_es"
+        android:languageTag="es"
+        android:subtypeLocale="es" />
+</spell-checker>

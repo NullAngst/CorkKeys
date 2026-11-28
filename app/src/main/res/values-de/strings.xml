@@ -98,7 +98,7 @@
     <string name="privacy_intro">Eine Tastatur sieht jedes Passwort und jede Nachricht, die du tippst. CorkKeys ist so gebaut, dass nichts Getipptes das Telefon verlässt und nichts gespeichert wird, solange du es hier nicht einschaltest.</string>
     <string name="privacy_switches">Aus, bis du sie einschaltest</string>
     <string name="privacy_incognito">Inkognito</string>
-    <string name="privacy_incognito_sub">Lernen bleibt überall aus, bis du das wieder ausschaltest. Auch im Menü der lang gedrückten Leertaste; die Leertaste zeigt es an, solange es an ist.</string>
+    <string name="privacy_incognito_sub">Lernen bleibt überall aus, bis du das wieder ausschaltest. Auch im Menü der lang gedrückten Leertaste. Apps können es auch anfordern, etwa die Inkognito-Tastatur-Einstellung von Signal oder ein privater Browser-Tab, und bekommen dasselbe. Die Leertaste zeigt es an, solange es an ist, und gelernte Wörter werden nicht vorgeschlagen.</string>
     <string name="privacy_facts">Was CorkKeys nicht kann</string>
     <string name="privacy_fact_network">Es hat keine Internetberechtigung, also blockiert Android jede Netzwerkverbindung, die es versuchen könnte.</string>
     <string name="privacy_fact_stored">Nichts Getipptes wird irgendwo gespeichert. Das Wort, das du gerade tippst, liegt im Arbeitsspeicher, bis es in der App ist, dann ist es weg.</string>
@@ -109,4 +109,58 @@
     <string name="privacy_permissions">Berechtigungen</string>
     <string name="privacy_permissions_none">Keine. CorkKeys fragt Android nach überhaupt keiner Berechtigung.</string>
     <string name="privacy_read_more">Die vollständigen Datenschutzhinweise lesen</string>
+
+    <!-- Suggestions, learned words, spell checker -->
+    <string name="settings_two_at_once">Zwei Sprachen gleichzeitig</string>
+    <string name="settings_two_at_once_sub">Mit Vorschlägen kommen Wörter aus jeder eingeschalteten Sprache, so kannst du sie in einem Satz mischen, ohne zu wechseln.</string>
+    <string name="settings_suggestions">Vorschläge</string>
+    <string name="settings_suggestions_sub">Drei Felder über den Tasten: was du getippt hast, der beste Tipp, der nächste. Einen Tipp lange drücken, um ihn nie wieder zu sehen.</string>
+    <string name="settings_autocorrect">Autokorrektur</string>
+    <string name="settings_autocorrect_sub">Ersetzt ein Wort, das nicht in der Liste steht, bei Leerzeichen oder Satzzeichen, wenn der beste Tipp klar besser ist. Löschen direkt danach holt dein Wort zurück.</string>
+    <string name="settings_swear">Schimpfwörter vorschlagen</string>
+    <string name="settings_swear_sub">Schimpfwörter und Beleidigungen werden nie in etwas anderes korrigiert. Das hier entscheidet nur, ob sie als Vorschläge erscheinen.</string>
+    <string name="settings_no_suggest_fields">Vorschläge in Feldern ohne Vorschläge</string>
+    <string name="settings_no_suggest_fields_sub">Manche Apps bitten die Tastatur, nichts vorzuschlagen. Nie in Passwortfeldern.</string>
+    <string name="settings_words_sub">Gelernte und entfernte Wörter ansehen und löschen.</string>
+    <string name="settings_spell_checker_note">CorkKeys kann auch die Rechtschreibprüfung von Android für andere Apps sein. Wähle es in den Android-Einstellungen unter System, Sprachen, Rechtschreibprüfung.</string>
+    <string name="about_words">Wortlisten</string>
+    <string name="about_words_sub">Aus der Leipzig Corpora Collection, über das aosp-dictionaries-Repository, unter CC BY 4.0.</string>
+    <string name="spell_checker_name">CorkKeys-Rechtschreibprüfung</string>
+    <string name="privacy_learn">Neue Wörter lernen</string>
+    <string name="privacy_learn_sub">Ein Wort, das in der Liste fehlt, wird gespeichert, sobald du es zweimal vollständig getippt hast. Nur das Wort: nichts darüber, was davor oder danach stand, wann oder wie oft. Nie in Passwort- oder Inkognitofeldern. Ausschalten löscht die gelernten Wörter.</string>
+    <string name="privacy_fact_removed">Wörter, die du aus den Vorschlägen entfernst, werden genauso gespeichert, nur das Wort, damit sie entfernt bleiben.</string>
+    <string name="privacy_fact_spell">Als Rechtschreibprüfung von Android antwortet CorkKeys nur; es speichert nichts und lernt nichts aus anderen Apps.</string>
+    <string name="words_title">Gelernte und entfernte Wörter</string>
+    <string name="words_learned">Gelernte Wörter</string>
+    <string name="words_learned_none">Keine.</string>
+    <string name="words_tap_forget">Tippen zum Vergessen</string>
+    <string name="words_forget_all">Alle gelernten Wörter vergessen</string>
+    <string name="words_removed">Aus Vorschlägen entfernt</string>
+    <string name="words_removed_none">Keine. Einen Vorschlag lange drücken, um ihn zu entfernen.</string>
+    <string name="words_tap_allow">Tippen, um es wieder vorzuschlagen</string>
+    <string name="words_allow_all">Alle wieder vorschlagen</string>
+    <string name="words_delete">Löschen</string>
+    <string name="words_all_sure">Die ganze Liste löschen?</string>
+
+    <!-- Swipe -->
+    <string name="settings_swipe">Wischen zum Tippen</string>
+    <string name="settings_swipe_sub">Über die Buchstaben wischen und loslassen: das Wort wird eingefügt, Alternativen stehen in der Leiste. Löschen direkt danach entfernt das ganze Wort. Aus in Passwort-, E-Mail-, Adress- und Zahlenfeldern.</string>
+
+    <!-- One-handed, floating, voice -->
+    <string name="cd_one_handed">Einhandmodus</string>
+    <string name="cd_floating">Schwebende Tastatur</string>
+    <string name="cd_voice">Spracheingabe-Tastatur</string>
+    <string name="cd_dock">Tastatur andocken</string>
+    <string name="cd_grip">Ziehen, um die Tastatur zu verschieben</string>
+    <string name="settings_voice">Spracheingabe</string>
+    <string name="settings_voice_keyboard">Tastatur für Spracheingabe</string>
+    <string name="settings_voice_none">Keine</string>
+    <string name="settings_voice_sub">Wähle eine deiner anderen Tastaturen, und in der Werkzeugleiste erscheint ein Mikrofon, das zu ihr wechselt. CorkKeys hat keinen eigenen Sprachcode.</string>
+    <string name="settings_voice_empty">Keine andere Tastatur ist aktiviert. Aktiviere zuerst eine in den Tastatureinstellungen von Android.</string>
+    <string name="settings_words_failed">Die Wortliste für %1$s konnte nicht geladen werden, daher sind Vorschläge, Wischen und die Rechtschreibprüfung dafür aus. Bitte öffne ein Issue auf GitHub.</string>
+    <string name="height_taller">Höher</string>
+    <string name="height_custom">Eigene</string>
+    <string name="height_custom_value">%1$d dp pro Reihe</string>
+    <string name="height_custom_title">Reihenhöhe</string>
+    <string name="height_custom_note">Normal ist 54 dp, Hoch 60, Höher 68. Die Tasten nehmen nie mehr als etwa zwei Fünftel des Bildschirms ein, im Querformat ein Drittel, also wachsen sehr hohe Reihen dort nicht weiter.</string>
 </resources>

@@ -151,6 +151,9 @@ class SuggestionStrip(ctx: Context, private val host: Host) : LinearLayout(ctx) 
     companion object {
         const val SLOTS = 3
         const val HEIGHT_DP = 44f
+
+        /** Shorter in landscape, where every pixel of height counts. */
+        const val LANDSCAPE_HEIGHT_DP = 36f
         const val BUTTON_DP = 48f
     }
 }

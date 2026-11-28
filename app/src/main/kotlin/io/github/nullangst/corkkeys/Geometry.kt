@@ -32,7 +32,7 @@ class Box(val left: Float, val top: Float, val right: Float, val bottom: Float) 
  */
 class PlacedKey(val key: Key, val box: Box, val hit: Box, val row: Int)
 
-enum class KeyHeight(val dp: Float) { SHORT(48f), NORMAL(54f), TALL(60f) }
+enum class KeyHeight(val dp: Float) { SHORT(48f), NORMAL(54f), TALL(60f), TALLER(68f) }
 
 enum class Mode { DOCKED, ONE_LEFT, ONE_RIGHT, FLOATING }
 
@@ -67,6 +67,11 @@ object Geometry {
 
     /** The keys never take more than this share of the window's height. */
     const val MAX_HEIGHT_FRACTION = 0.42f
+
+    /** Less in landscape, where the window is short and the app needs room above the keys. */
+    const val LANDSCAPE_MAX_HEIGHT_FRACTION = 0.34f
+
+    fun maxKeysFraction(f: Frame): Float = if (f.landscape) LANDSCAPE_MAX_HEIGHT_FRACTION else MAX_HEIGHT_FRACTION
     const val FLOAT_MAX_HEIGHT_FRACTION = 0.34f
 
     const val FLOAT_MAX_WIDTH_DP = 400f
@@ -81,7 +86,15 @@ object Geometry {
      * page with one row more than the letters squeezes its rows into the same space instead of
      * making the keyboard jump.
      */
-    fun plan(layout: Layout, frame: Frame, height: KeyHeight, mode: Mode, rowsForHeight: Int = layout.rows.size): Plan {
+    fun plan(layout: Layout, frame: Frame, height: KeyHeight, mode: Mode, rowsForHeight: Int = layout.rows.size): Plan =
+        plan(layout, frame, height.dp, mode, rowsForHeight)
+
+    /** The smallest and largest row height the custom height setting allows, in dp. */
+    const val MIN_ROW_DP = 40f
+    const val MAX_ROW_DP = 96f
+
+    /** Lays out [layout] with rows [rowDp] high, before the cap on the window's height. */
+    fun plan(layout: Layout, frame: Frame, rowDp: Float, mode: Mode, rowsForHeight: Int = layout.rows.size): Plan {
         val d = frame.density
         val usable = frame.usableWidth.toFloat()
         val floating = mode == Mode.FLOATING
@@ -106,8 +119,8 @@ object Geometry {
         }
 
         val pad = PAD_DP * d
-        var rowH = height.dp * d * (if (floating) FLOAT_SCALE else 1f)
-        val maxKeys = frame.windowHeight * (if (floating) FLOAT_MAX_HEIGHT_FRACTION else MAX_HEIGHT_FRACTION)
+        var rowH = rowDp.coerceIn(MIN_ROW_DP, MAX_ROW_DP) * d * (if (floating) FLOAT_SCALE else 1f)
+        val maxKeys = frame.windowHeight * (if (floating) FLOAT_MAX_HEIGHT_FRACTION else maxKeysFraction(frame))
         if (rowH * rowsForHeight > maxKeys) rowH = maxKeys / rowsForHeight
         val keysHeight = rowH * rowsForHeight
         val actualRowH = keysHeight / layout.rows.size
@@ -143,5 +156,40 @@ object Geometry {
 
         val bottomInset = if (floating) 0f else frame.insetBottom.toFloat()
         return Plan(placed, planWidth, pad + keysHeight + pad + bottomInset, unit)
+    }
+}
+
+/**
+ * Where each letter sits on a layout, in key widths, for the corrector's "neighbouring keys"
+ * and the swipe decoder's key centres. Accented letters map to their plain key.
+ */
+class KeyMap private constructor(private val pos: Map<Char, FloatArray>, val rowHeight: Float) {
+    fun center(c: Char): FloatArray? = pos[c] ?: pos[Chars.base(c)]
+
+    fun near(a: Char, b: Char): Boolean {
+        val p = center(a) ?: return false
+        val q = center(b) ?: return false
+        val dx = p[0] - q[0]
+        val dy = p[1] - q[1]
+        return dx * dx + dy * dy <= NEAR_KEYS * NEAR_KEYS
+    }
+
+    val letters: Set<Char> get() = pos.keys
+
+    companion object {
+        /** Keys whose centres are this many key widths apart or closer are neighbours. */
+        const val NEAR_KEYS = 1.6f
+
+        fun of(layout: Layout, plan: Plan = Geometry.plan(layout, Frame(1080, 2400, 2.75f), KeyHeight.NORMAL, Mode.DOCKED)): KeyMap {
+            val u = plan.unit
+            val map = HashMap<Char, FloatArray>()
+            var rowH = 1f
+            for (k in plan.keys) {
+                if (!k.key.isLetter) continue
+                map[k.key.output[0]] = floatArrayOf(k.box.cx / u, k.box.cy / u)
+                rowH = k.box.height / u
+            }
+            return KeyMap(map, rowH)
+        }
     }
 }

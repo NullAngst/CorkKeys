@@ -12,6 +12,8 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.inputmethodservice.InputMethodService
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -33,7 +35,7 @@ import android.widget.LinearLayout
  * ([onComputeInsets]); everything else goes straight to the app.
  */
 class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, ToolsRow.Host,
-    EditingPanel.Host, LanguageMenu.Host, KeyAccessibility.Host {
+    EditingPanel.Host, LanguageMenu.Host, KeyAccessibility.Host, FloatingKeyboard.Host {
 
     lateinit var prefs: Prefs
         private set
@@ -56,10 +58,27 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     private var tools: ToolsRow? = null
     private var panel: EditingPanel? = null
     private var menu: LanguageMenu? = null
+    private var floater: FloatingKeyboard? = null
 
     private var insetLeft = 0
+    private var insetTop = 0
     private var insetRight = 0
     private var insetBottom = 0
+
+    private val main = Handler(Looper.getMainLooper())
+    private var corrector: Corrector? = null
+    private var correctorKey = ""
+    private var suggestGen = 0
+
+    /** The last suggestions computed: for which word, the candidates, and what autocorrect would do. */
+    private var lastWord = ""
+    private var lastCandidates: List<Candidate> = emptyList()
+    private var lastAuto: String? = null
+
+    private var decoder: SwipeDecoder? = null
+    private var decoderKey = ""
+    private var trail: SwipeTrail? = null
+    private var swipeGen = 0
 
     override fun onCreate() {
         super.onCreate()
@@ -87,15 +106,23 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         val area = FrameLayout(this)
         val kv = KeyboardView(this, this)
         kv.accessibility = KeyAccessibility(kv, this)
+        val tr = SwipeTrail(kv)
+        kv.trail = { tr.draw(it) }
+        trail = tr
         val p = EditingPanel(this, this).apply { visibility = View.GONE }
         val m = LanguageMenu(this, this).apply { visibility = View.GONE }
         area.addView(kv, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         area.addView(p, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0))
         area.addView(m, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         val stripH = (SuggestionStrip.HEIGHT_DP * resources.displayMetrics.density).toInt()
+        val fk = FloatingKeyboard(this, this).apply {
+            target = c
+            visibility = View.GONE
+        }
+        c.addView(fk, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         c.addView(s, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, stripH))
         c.addView(area, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        r.addView(c, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM))
+        r.addView(c, FloatingKeyboard.dockedParams())
         val overlay = KeyboardView.Overlay(this, kv)
         kv.overlay = overlay
         r.addView(overlay, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -112,6 +139,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         tools = t
         panel = p
         menu = m
+        floater = fk
         applyPalette()
         return r
     }
@@ -120,11 +148,14 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val i = wi.getInsets(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
             insetLeft = i.left
+            insetTop = i.top
             insetRight = i.right
             insetBottom = i.bottom
         } else {
             @Suppress("DEPRECATION")
             insetLeft = wi.systemWindowInsetLeft
+            @Suppress("DEPRECATION")
+            insetTop = wi.systemWindowInsetTop
             @Suppress("DEPRECATION")
             insetRight = wi.systemWindowInsetRight
             @Suppress("DEPRECATION")
@@ -195,8 +226,53 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     private fun applyFrame() {
         val f = frame()
         keys?.setFrame(f)
-        strip?.setPadding(insetLeft, 0, insetRight, 0)
+        strip?.let { st ->
+            val h = ((if (f.landscape) SuggestionStrip.LANDSCAPE_HEIGHT_DP else SuggestionStrip.HEIGHT_DP) * f.density).toInt()
+            val lp = st.layoutParams
+            if (lp != null && lp.height != h) {
+                lp.height = h
+                st.layoutParams = lp
+            }
+        }
+        applyMode()
         syncPanelHeight()
+    }
+
+    private fun mode(): Mode = prefs.mode
+
+    /**
+     * Docked or floating: docked, the keyboard runs along the bottom, full width, padded clear
+     * of the system bars; floating, it is a smaller block with a drag handle, kept inside them.
+     */
+    private fun applyMode() {
+        val c = container ?: return
+        val r = root ?: return
+        val fk = floater ?: return
+        val floating = mode() == Mode.FLOATING
+        if (floating) {
+            strip?.setPadding(0, 0, 0, 0)
+            fk.visibility = View.VISIBLE
+            val f = frame()
+            val w = Geometry.floatingWidth(f).toInt()
+            val lp = c.layoutParams as FrameLayout.LayoutParams
+            if (lp.width != w || lp.gravity != (Gravity.TOP or Gravity.START)) {
+                lp.width = w
+                lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                lp.gravity = Gravity.TOP or Gravity.START
+                c.layoutParams = lp
+            }
+            val rw = if (r.width > 0) r.width else f.windowWidth
+            val rh = if (r.height > 0) r.height else f.windowHeight
+            fk.safe.set(insetLeft, insetTop, rw - insetRight, rh - insetBottom)
+            fk.place(prefs.floatX, prefs.floatY)
+        } else {
+            strip?.setPadding(insetLeft, 0, insetRight, 0)
+            fk.visibility = View.GONE
+            val lp = c.layoutParams as FrameLayout.LayoutParams
+            if (lp.width != ViewGroup.LayoutParams.MATCH_PARENT || lp.gravity != Gravity.BOTTOM || lp.topMargin != 0) {
+                c.layoutParams = FloatingKeyboard.dockedParams()
+            }
+        }
     }
 
     private fun syncPanelHeight() {
@@ -209,7 +285,9 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
                 lp.height = h
                 p.layoutParams = lp
             }
-            p.setPadding(insetLeft, p.paddingTop, insetRight, insetBottom + (3 * resources.displayMetrics.density).toInt())
+            val pad = (3 * resources.displayMetrics.density).toInt()
+            if (mode() == Mode.FLOATING) p.setPadding(0, p.paddingTop, 0, pad)
+            else p.setPadding(insetLeft, p.paddingTop, insetRight, insetBottom + pad)
         }
     }
 
@@ -218,7 +296,8 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         val r = root ?: return
         val c = container ?: return
         if (r.height == 0 || c.height == 0) return
-        val top = c.top
+        // Floating, the app keeps the whole screen: it is told the keyboard takes no space.
+        val top = if (mode() == Mode.FLOATING) r.height else c.top
         outInsets.contentTopInsets = top
         outInsets.visibleTopInsets = top
         outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION
@@ -245,6 +324,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
             closeMenu()
             strip?.setToolsOpen(false)
         }
+        loadWords()
         composer.start(info?.initialSelStart ?: -1, info?.initialSelEnd ?: -1)
         Languages.announce(this, prefs.language)
         showLayout()
@@ -255,14 +335,21 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
         keys?.touch?.cancelAll()
+        composer.finish()
         closeMenu()
+        if (!prefs.learn || prefs.incognito) LearnedWords.get(this).forgetPending()
+    }
+
+    override fun onFinishInput() {
+        super.onFinishInput()
+        composer.finish()
     }
 
     override fun onUpdateSelection(
         oldSelStart: Int, oldSelEnd: Int, newSelStart: Int, newSelEnd: Int, candidatesStart: Int, candidatesEnd: Int,
     ) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
-        composer.onSelection(newSelStart, newSelEnd)
+        composer.onSelection(newSelStart, newSelEnd, candidatesStart, candidatesEnd)
         updateShift()
     }
 
@@ -281,6 +368,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         strip?.applyPalette(pal)
         tools?.applyPalette(pal)
         panel?.applyPalette(pal)
+        floater?.applyPalette(pal)
         container?.setBackgroundColor(pal.keyboardBg)
         keys?.invalidate()
     }
@@ -303,14 +391,22 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         }
         kv.enter = field.enter
         kv.spaceLabel = spaceLabel()
-        kv.setLayout(layout, frame(), prefs.height, Mode.DOCKED, rows)
+        kv.setLayout(layout, frame(), prefs.rowDp, mode(), rows)
+        applyMode()
         syncPanelHeight()
+        prepareDecoder()
     }
 
     private fun spaceLabel(): String {
         val label = Languages.spaceLabel(prefs.language, prefs.languages, mixing())
-        return if (prefs.incognito) label + " · " + getString(R.string.space_incognito) else label
+        return if (incognito()) label + " · " + getString(R.string.space_incognito) else label
     }
+
+    /**
+     * Incognito: switched on by hand, or asked for by the app (Signal's incognito keyboard,
+     * private browser tabs). Nothing is learned and learned words aren't suggested.
+     */
+    private fun incognito(): Boolean = field.incognito(prefs.incognito)
 
     /** Words from every language that is on, in one sentence. Only matters with suggestions on. */
     private fun mixing(): Boolean = prefs.twoAtOnce && prefs.suggestions && prefs.languages.size > 1
@@ -332,7 +428,110 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     }
 
     private fun refreshStrip() {
-        strip?.show(emptyList(), -1)
+        wordChanged()
+    }
+
+    // ---- Words: suggestions, autocorrect, learning ----
+
+    /** Suggestions are on, and this field allows them. */
+    fun composing(): Boolean = prefs.suggestions && field.allowsSuggestions(prefs.inNoSuggestFields)
+
+    fun autocorrectOn(): Boolean = composing() && prefs.autocorrect && field.allowsAutocorrect
+
+    /** Languages whose lists the keyboard needs right now. None at all for a plain keyboard. */
+    private fun wordLanguages(): List<String> =
+        if (prefs.suggestions || prefs.swipe) Languages.mixed(prefs.language, prefs.languages, mixing()) else emptyList()
+
+    private fun loadWords() {
+        val need = wordLanguages()
+        Dictionaries.keepOnly(need + SpellCheck.inUse)
+        if (need.isEmpty()) return
+        Dictionaries.load(this, need) {
+            main.post {
+                correctorKey = ""
+                decoderKey = ""
+                if (composer.word.isNotEmpty()) wordChanged()
+                prepareDecoder()
+            }
+        }
+    }
+
+    /** The corrector for the languages in use, or null while their lists are still loading. */
+    private fun corrector(): Corrector? {
+        val langs = wordLanguages()
+        if (langs.isEmpty()) return null
+        val dicts = langs.mapNotNull { Dictionaries.get(it) }
+        if (dicts.isEmpty() || dicts[0].language != prefs.language) return null
+        val learned = LearnedWords.get(this)
+        val removed = RemovedWords.get(this)
+        val learnOn = prefs.learn && !incognito()
+        val key = langs.joinToString(",") + "|" + dicts.size + "|" + learnOn + "|" + learned.version + "|" + removed.version
+        if (key != correctorKey || corrector == null) {
+            val keyMap = KeyMap.of(Letters.build(Letters.data(prefs.language), false))
+            val mine = if (learnOn) learned.all().toList().takeIf { it.isNotEmpty() }?.let { Dictionary.ofWords("user", it, LEARNED_FREQUENCY) } else null
+            corrector = Corrector(dicts, keyMap, removed.all().toSet(), mine)
+            correctorKey = key
+        }
+        return corrector
+    }
+
+    /** The word being typed changed: work out its suggestions off the main thread. */
+    fun wordChanged() {
+        val s = strip ?: return
+        val typed = composer.word.toString()
+        val gen = ++suggestGen
+        if (composer.swiped) return
+        if (typed.isEmpty() || !composing()) {
+            lastWord = ""
+            s.show(emptyList(), -1)
+            return
+        }
+        val c = corrector()
+        if (c == null) {
+            s.show(emptyList(), -1)
+            return
+        }
+        val swear = prefs.swearWords
+        val auto = autocorrectOn()
+        val locked = shift.locked
+        Dictionaries.onWorker {
+            val cands = c.suggest(typed, swear)
+            val fix = if (auto) c.autocorrection(typed, cands) else null
+            main.post {
+                if (gen != suggestGen) return@post
+                lastWord = typed
+                lastCandidates = cands
+                lastAuto = fix
+                showSuggestions(typed, cands, fix, locked)
+            }
+        }
+    }
+
+    private fun showSuggestions(typed: String, cands: List<Candidate>, fix: String?, locked: Boolean) {
+        val words = ArrayList<String>(SuggestionStrip.SLOTS)
+        words += typed
+        for (cand in cands) {
+            if (words.size == SuggestionStrip.SLOTS) break
+            val w = Chars.applyCase(typed, cand.word, locked)
+            if (words.none { it == w } && !cand.word.equals(typed, ignoreCase = false)) words += w
+        }
+        val highlight = if (fix == null) -1 else words.indexOf(Chars.applyCase(typed, fix, locked)).takeIf { it > 0 } ?: -1
+        strip?.show(words, highlight)
+    }
+
+    /** What autocorrect would put in place of [typed], from the last suggestions when they match. */
+    fun autocorrection(typed: String): String? {
+        if (typed == lastWord) return lastAuto
+        val c = corrector() ?: return null
+        return c.autocorrection(typed, c.suggest(typed, prefs.swearWords))
+    }
+
+    /** A word went in exactly as tapped out. Learned only with the switch on, outside incognito and private fields. */
+    fun learn(word: String) {
+        val allowed = prefs.learn && !incognito() && field.allowsLearning
+        if (!allowed) return
+        val c = corrector() ?: return
+        if (LearnedWords.get(this).typedInFull(word, true, c.inList(word))) correctorKey = ""
     }
 
     // ---- Keys ----
@@ -383,13 +582,20 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
             Kind.SYMBOLS -> toPage(Page.SYMBOLS)
             Kind.SYMBOLS_MORE -> toPage(Page.SYMBOLS_MORE)
             Kind.LETTERS -> toPage(Page.BASE)
-            Kind.ONE_HANDED_FLIP, Kind.ONE_HANDED_EXIT -> {}
+            Kind.ONE_HANDED_FLIP -> {
+                OneHanded.flip(prefs)
+                showLayout()
+            }
+            Kind.ONE_HANDED_EXIT -> {
+                OneHanded.set(prefs, Mode.DOCKED)
+                showLayout()
+            }
         }
         updateShift()
     }
 
     private fun type(text: String, letter: Boolean) {
-        composer.text(text)
+        composer.text(text, shift.locked)
         if (letter) shift.typed()
     }
 
@@ -435,11 +641,66 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         updateShift()
     }
 
-    override fun swipeAllowed(): Boolean = false
+    // ---- Swipe ----
 
-    override fun swipeMoved(x: Float, y: Float) {}
+    private fun swipeOn(): Boolean = prefs.swipe && field.allowsSwipe && page == Page.BASE &&
+        (field.kind == FieldKind.TEXT)
 
-    override fun swiped(xs: FloatArray, ys: FloatArray) {}
+    /**
+     * The decoder for the keys on screen right now. Its index of words by first and last key is
+     * built on the word thread, so the first swipe after a layout change never waits for it.
+     */
+    private fun prepareDecoder() {
+        if (!swipeOn()) return
+        val plan = keys?.plan ?: return
+        val langs = wordLanguages()
+        val dicts = langs.mapNotNull { Dictionaries.get(it) }
+        if (dicts.isEmpty() || dicts[0].language != prefs.language) return
+        val key = langs.joinToString(",") + "|" + dicts.size + "|" + System.identityHashCode(plan)
+        if (key == decoderKey) return
+        decoderKey = key
+        val keyMap = KeyMap.of(baseLayout(), plan)
+        Dictionaries.onWorker {
+            val d = SwipeDecoder(dicts, keyMap)
+            main.post { if (decoderKey == key) decoder = d }
+        }
+    }
+
+    override fun swipeAllowed(): Boolean = swipeOn() && decoder != null
+
+    override fun swipeMoved(x: Float, y: Float) {
+        trail?.add(x, y)
+    }
+
+    override fun swiped(xs: FloatArray, ys: FloatArray) {
+        trail?.lift()
+        val d = decoder ?: return
+        val unit = keys?.plan?.unit ?: return
+        val kx = FloatArray(xs.size) { xs[it] / unit }
+        val ky = FloatArray(ys.size) { ys[it] / unit }
+        val gen = ++swipeGen
+        val swear = prefs.swearWords
+        val removed = RemovedWords.get(this).all().toSet()
+        val upper = shift.state
+        Dictionaries.onWorker {
+            val found = d.decode(kx, ky, 8).filter { it.word.lowercase() !in removed }
+            main.post {
+                if (gen != swipeGen || found.isEmpty()) return@post
+                fun cased(w: String) = when (upper) {
+                    Shift.State.LOCK -> w.map { Key.shiftText(it.toString()) }.joinToString("")
+                    Shift.State.ONE, Shift.State.AUTO -> Chars.capitalize(w)
+                    Shift.State.OFF -> w
+                }
+                // The word you swiped goes in whatever it is; only the alternatives follow the swear-word switch.
+                val best = found.first()
+                val alts = found.drop(1).filter { swear || !it.offensive }.take(SuggestionStrip.SLOTS - 1)
+                composer.swipe(cased(best.word))
+                if (upper != Shift.State.LOCK) shift.typed()
+                strip?.show((listOf(best) + alts).map { cased(it.word) }, 0)
+                updateShift()
+            }
+        }
+    }
 
     // ---- Accessibility ----
 
@@ -490,20 +751,48 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
 
     override fun toolsPressed() {
         val s = strip ?: return
+        // The mic only exists once a voice keyboard is picked, and only while it is still enabled.
+        tools?.setShown(ToolsRow.Tool.VOICE, VoiceHandoff.picked(this, prefs.voiceIme) != null)
         s.setToolsOpen(!s.toolsOpen)
     }
 
     override fun pastePressed() = Paste.paste(this, currentInputConnection)
 
-    override fun picked(slot: Int, word: String) {}
+    override fun picked(slot: Int, word: String) {
+        if (composer.swiped) {
+            composer.swapSwiped(word)
+            return
+        }
+        composer.pick(word, slot)
+        updateShift()
+    }
 
-    override fun removeAsked(word: String) {}
+    /** Long-press on a suggestion: never suggest it again. */
+    override fun removeAsked(word: String) {
+        keys?.let { Haptics.longPress(it, prefs.vibrate) }
+        RemovedWords.get(this).add(word)
+        correctorKey = ""
+        wordChanged()
+    }
 
     override fun tool(t: ToolsRow.Tool, v: View) {
         buttonFeedback(v)
         when (t) {
             ToolsRow.Tool.EDIT -> openEditing()
             ToolsRow.Tool.SETTINGS -> openSettings()
+            ToolsRow.Tool.ONE_HANDED -> {
+                OneHanded.toggle(prefs)
+                showLayout()
+            }
+            ToolsRow.Tool.FLOATING -> {
+                OneHanded.set(prefs, if (mode() == Mode.FLOATING) Mode.DOCKED else Mode.FLOATING)
+                showLayout()
+            }
+            ToolsRow.Tool.VOICE -> {
+                strip?.setToolsOpen(false)
+                if (!VoiceHandoff.switchTo(this, prefs.voiceIme)) prefs.voiceIme = ""
+                return
+            }
         }
         strip?.setToolsOpen(false)
     }
@@ -577,5 +866,23 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         } catch (_: Exception) {
         }
         requestHideSelf(0)
+    }
+
+    // ---- Floating ----
+
+    override fun floatMoved(fx: Float, fy: Float) {
+        prefs.floatX = fx
+        prefs.floatY = fy
+    }
+
+    override fun dockPressed() {
+        keys?.let { Haptics.key(it, prefs.vibrate) }
+        OneHanded.set(prefs, Mode.DOCKED)
+        showLayout()
+    }
+
+    companion object {
+        /** Learned words count as real words, about as common as an everyday word. */
+        const val LEARNED_FREQUENCY = 120
     }
 }

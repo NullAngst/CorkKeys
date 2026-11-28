@@ -98,7 +98,7 @@
     <string name="privacy_intro">Un teclado ve cada contraseña y cada mensaje que escribes. CorkKeys está hecho para que nada de lo que escribes salga del teléfono y no se guarde nada salvo que lo actives aquí.</string>
     <string name="privacy_switches">Desactivados hasta que los actives</string>
     <string name="privacy_incognito">Incógnito</string>
-    <string name="privacy_incognito_sub">El aprendizaje queda desactivado en todas partes hasta que lo vuelvas a quitar. También en el menú al mantener pulsado el espacio; la barra espaciadora lo indica mientras está activo.</string>
+    <string name="privacy_incognito_sub">El aprendizaje queda desactivado en todas partes hasta que lo vuelvas a quitar. También en el menú al mantener pulsado el espacio. Las apps también pueden pedirlo, como el ajuste de teclado de incógnito de Signal o una pestaña privada del navegador, y reciben lo mismo. La barra espaciadora lo indica mientras está activo y las palabras aprendidas no se sugieren.</string>
     <string name="privacy_facts">Lo que CorkKeys no puede hacer</string>
     <string name="privacy_fact_network">No tiene permiso de internet, así que Android bloquea cualquier conexión de red que intente.</string>
     <string name="privacy_fact_stored">Nada de lo que escribes se guarda en ningún sitio. La palabra que estás escribiendo vive en memoria hasta que entra en la app y después desaparece.</string>
@@ -109,4 +109,58 @@
     <string name="privacy_permissions">Permisos</string>
     <string name="privacy_permissions_none">Ninguno. CorkKeys no pide ningún permiso a Android.</string>
     <string name="privacy_read_more">Leer las notas completas de privacidad</string>
+
+    <!-- Suggestions, learned words, spell checker -->
+    <string name="settings_two_at_once">Dos idiomas a la vez</string>
+    <string name="settings_two_at_once_sub">Con sugerencias, las palabras vienen de todos los idiomas activados, así puedes mezclarlos en una frase sin cambiar.</string>
+    <string name="settings_suggestions">Sugerencias</string>
+    <string name="settings_suggestions_sub">Tres huecos sobre las teclas: lo que escribiste, la mejor opción y la siguiente. Mantén pulsada una opción para no volver a verla.</string>
+    <string name="settings_autocorrect">Autocorrección</string>
+    <string name="settings_autocorrect_sub">Cambia una palabra que no está en la lista al pulsar espacio o puntuación, cuando la mejor opción gana con claridad. Borrar justo después devuelve tu palabra.</string>
+    <string name="settings_swear">Sugerir palabrotas</string>
+    <string name="settings_swear_sub">Las palabrotas y los insultos nunca se corrigen por otra cosa. Esto solo decide si aparecen como sugerencias.</string>
+    <string name="settings_no_suggest_fields">Sugerencias en campos sin sugerencias</string>
+    <string name="settings_no_suggest_fields_sub">Algunas apps piden al teclado que no sugiera. Nunca en campos de contraseña.</string>
+    <string name="settings_words_sub">Ver y borrar palabras aprendidas y palabras quitadas.</string>
+    <string name="settings_spell_checker_note">CorkKeys también puede ser el corrector ortográfico de Android para otras apps. Elígelo en Ajustes de Android, Sistema, Idiomas, Corrector ortográfico.</string>
+    <string name="about_words">Listas de palabras</string>
+    <string name="about_words_sub">De la Leipzig Corpora Collection, a través del repositorio aosp-dictionaries, con licencia CC BY 4.0.</string>
+    <string name="spell_checker_name">Corrector de CorkKeys</string>
+    <string name="privacy_learn">Aprender palabras nuevas</string>
+    <string name="privacy_learn_sub">Una palabra que no está en la lista se guarda cuando la has escrito entera dos veces. Solo la palabra: nada de lo que iba antes o después, ni cuándo, ni cuántas veces. Nunca en campos de contraseña o de incógnito. Desactivarlo borra las palabras aprendidas.</string>
+    <string name="privacy_fact_removed">Las palabras que quitas de las sugerencias se guardan igual, solo la palabra, para que sigan quitadas.</string>
+    <string name="privacy_fact_spell">Como corrector ortográfico de Android, CorkKeys solo responde; no guarda nada ni aprende nada de otras apps.</string>
+    <string name="words_title">Palabras aprendidas y quitadas</string>
+    <string name="words_learned">Palabras aprendidas</string>
+    <string name="words_learned_none">Ninguna.</string>
+    <string name="words_tap_forget">Toca para olvidarla</string>
+    <string name="words_forget_all">Olvidar todas las palabras aprendidas</string>
+    <string name="words_removed">Quitadas de las sugerencias</string>
+    <string name="words_removed_none">Ninguna. Mantén pulsada una sugerencia para quitarla.</string>
+    <string name="words_tap_allow">Toca para volver a sugerirla</string>
+    <string name="words_allow_all">Volver a sugerirlas todas</string>
+    <string name="words_delete">Borrar</string>
+    <string name="words_all_sure">¿Borrar toda la lista?</string>
+
+    <!-- Swipe -->
+    <string name="settings_swipe">Escritura deslizando</string>
+    <string name="settings_swipe_sub">Desliza sobre las letras y levanta el dedo: entra la palabra, con alternativas en la barra. Borrar justo después quita la palabra entera. Desactivado en campos de contraseña, correo, dirección y números.</string>
+
+    <!-- One-handed, floating, voice -->
+    <string name="cd_one_handed">Modo de una mano</string>
+    <string name="cd_floating">Teclado flotante</string>
+    <string name="cd_voice">Teclado de voz</string>
+    <string name="cd_dock">Acoplar el teclado</string>
+    <string name="cd_grip">Arrastra para mover el teclado</string>
+    <string name="settings_voice">Escritura por voz</string>
+    <string name="settings_voice_keyboard">Teclado de voz</string>
+    <string name="settings_voice_none">Ninguno</string>
+    <string name="settings_voice_sub">Elige otro de tus teclados y aparece un micrófono en la fila de herramientas que cambia a él. CorkKeys no tiene código de voz propio.</string>
+    <string name="settings_voice_empty">No hay ningún otro teclado activado. Activa uno primero en los ajustes de teclado de Android.</string>
+    <string name="settings_words_failed">No se pudo cargar la lista de palabras de %1$s, así que las sugerencias, el deslizamiento y el corrector no funcionan para ese idioma. Abre un issue en GitHub, por favor.</string>
+    <string name="height_taller">Más alta</string>
+    <string name="height_custom">Personalizada</string>
+    <string name="height_custom_value">%1$d dp por fila</string>
+    <string name="height_custom_title">Altura de fila</string>
+    <string name="height_custom_note">Normal es 54 dp, Alta 60, Más alta 68. Las teclas nunca ocupan más de unos dos quintos de la pantalla, un tercio en horizontal, así que las filas muy altas dejan de crecer ahí.</string>
 </resources>
