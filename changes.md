@@ -9,6 +9,10 @@
 * Swipe typing with a from-scratch SHARK2 decoder and a trail in the theme's accent colour
 * One-handed mode, floating keyboard, voice keyboard handoff
 * Word list credit in the About section of settings
+* Word lists load whether the APK holds them gzipped or unpacked: on a device they never loaded, which left suggestions, autocorrect, swipe and the spell checker empty
+* A word list that fails to load is named in settings instead of failing silently
+* Settings screens scroll a focused field back into view when the keyboard opens, so the setup screen's test field isn't hidden in landscape
+* Memory measured on Android 15 and written into maintenance.md, along with the device test on the devtest branch
 * Full README, PRIVACY.md, maintenance.md and this file
 
 Reasons for changes: v0.5.0 went out with only the plain keyboard, because the later pull requests merged into each other's branches instead of main. This brings the rest of the first build in.

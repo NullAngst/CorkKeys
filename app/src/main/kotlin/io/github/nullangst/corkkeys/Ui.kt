@@ -48,6 +48,9 @@ object Ui {
                 @Suppress("DEPRECATION")
                 v.setPadding(wi.systemWindowInsetLeft, wi.systemWindowInsetTop, wi.systemWindowInsetRight, wi.systemWindowInsetBottom)
             }
+            // A padding change doesn't scroll anything, so a focused field the keyboard now covers
+            // (the setup screen's test field in landscape) is brought back into view by hand.
+            v.findFocus()?.let { f -> f.post { f.requestRectangleOnScreen(android.graphics.Rect(0, 0, f.width, f.height), false) } }
             wi
         }
     }

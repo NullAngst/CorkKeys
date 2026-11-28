@@ -41,20 +41,28 @@ Before each release, and after an Android update on your own phone:
 7. Turn on TalkBack and type a word by sliding and lifting.
 8. Screenshot each theme, bordered and flat.
 
-The emulator harness Corkboard uses can be adapted for CorkKeys; keep it out of `main`, as Corkboard does.
+Much of this runs on an emulator too. The `devtest` branch holds a device test (`.github/devtest/devtest.sh` and its workflow), kept out of `main`. Bring that branch up to date with `main`, push it, and GitHub's runner boots an Android 15 emulator and installs the debug build. Then it:
+
+- types by tapping the keys, checks double-space period, long-press, autocorrect and its undo
+- swipes words, switches to German, and tries one-handed, floating, landscape and three-button navigation
+- checks that Paste in another app reads no clipboard
+- screenshots every theme and measures memory
+
+Results, screenshots and UI dumps land on the `devtest-results` branch; open `results.txt` there first. It can't do the lock screen after a reboot, TalkBack, or a real Chrome and Termux, so those stay on the phone.
 
 ## 4. Memory and the word cap
 
-Each list is cut to 250,000 words. Measured on a desktop JVM, loaded with its trie:
+Each list is cut to 250,000 words. Measured on an Android 15 emulator by the device test (`dumpsys meminfo`, Dalvik heap size):
 
 | Loaded | Heap |
 |---|---|
-| English | about 21 MB |
-| German | about 22 MB |
-| Spanish | about 13 MB |
-| English and German together | about 43 MB |
+| Nothing (suggestions and swipe off) | about 5 MB |
+| English | about 41 MB |
+| English and German together | about 63 MB |
 
-Nothing loads with suggestions and swipe off, so a plain keyboard holds none of this. On the phone, measure English and German together with Android Studio's memory profiler (or `adb shell dumpsys meminfo io.github.nullangst.corkkeys`) and write the number here. If it gets uncomfortable on older phones, lower the cap in `.github/scripts/fetch_wordlists.sh` (`WORD_CAP`) and refresh the lists.
+A desktop JVM needs about half that (English 21 MB, German 22 MB, Spanish 13 MB): the phone's figure includes what's left over from building the trie until the next garbage collection. Phones give a keyboard 256 MB or more of heap, so this fits, but it's the number to watch. Check it on your own phone with `adb shell dumpsys meminfo io.github.nullangst.corkkeys` with two languages on. If it gets uncomfortable on older phones, lower the cap in `.github/scripts/fetch_wordlists.sh` (`WORD_CAP`) and refresh the lists.
+
+Nothing loads with suggestions and swipe off, so a plain keyboard holds none of this. With them on, a list loads on a background thread in about 2 seconds on the emulator.
 
 Swipe decodes take 10 to 15 ms on a desktop JVM. They run on the word thread either way, so a slower phone shows the word a moment later instead of freezing the keys.
 
