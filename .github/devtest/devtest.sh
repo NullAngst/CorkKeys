@@ -48,8 +48,12 @@ dump() {
 
 # Reads the keyboard's keys from a fresh dump into keys.tsv.
 read_keys() {
-    dump "$1"
-    python3 "$ui" keys "$out/$1.xml" "$pkg" > "$keys_file"
+    for _ in 1 2 3 4; do
+        dump "$1"
+        python3 "$ui" keys "$out/$1.xml" "$pkg" > "$keys_file"
+        [ "$(wc -l < "$keys_file")" -ge 20 ] && return 0
+        sleep 2
+    done
 }
 
 field_text() {
@@ -209,6 +213,8 @@ adb root >/dev/null 2>&1 || true
 sleep 3
 adb wait-for-device
 log "Android $(adb shell getprop ro.build.version.release) (API $(adb shell getprop ro.build.version.sdk)), root: $(adb shell id -u)"
+log "word lists in the APK:"
+unzip -lv app/build/outputs/apk/debug/app-debug.apk | grep 'words/' | tee -a "$out/steps.txt"
 adb install -r -t app/build/outputs/apk/debug/app-debug.apk >/dev/null
 # The emulator has a hardware keyboard; without this Android hides every on-screen keyboard.
 adb shell settings put secure show_ime_with_hard_keyboard 1
