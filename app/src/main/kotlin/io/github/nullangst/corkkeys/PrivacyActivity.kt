@@ -53,6 +53,15 @@ class PrivacyActivity : Activity() {
         add(Ui.note(this, pal, str(R.string.privacy_intro)))
 
         add(Ui.header(this, pal, str(R.string.privacy_switches)))
+        add(Ui.switchRow(this, pal, str(R.string.privacy_learn), prefs.learn, str(R.string.privacy_learn_sub)) { on ->
+            prefs.learn = on
+            // Off means gone: the learned words are deleted, not just ignored.
+            if (!on) LearnedWords.get(this).clear()
+            build()
+        })
+        add(Ui.row(this, pal, str(R.string.words_title), str(R.string.settings_words_sub)) {
+            startActivity(Intent(this, WordListsActivity::class.java))
+        })
         add(Ui.switchRow(this, pal, str(R.string.privacy_incognito), prefs.incognito, str(R.string.privacy_incognito_sub)) {
             prefs.incognito = it
             build()
@@ -62,6 +71,8 @@ class PrivacyActivity : Activity() {
         for (id in listOf(
             R.string.privacy_fact_network,
             R.string.privacy_fact_stored,
+            R.string.privacy_fact_removed,
+            R.string.privacy_fact_spell,
             R.string.privacy_fact_passwords,
             R.string.privacy_fact_clipboard,
             R.string.privacy_fact_backup,

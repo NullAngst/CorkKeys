@@ -145,3 +145,38 @@ object Geometry {
         return Plan(placed, planWidth, pad + keysHeight + pad + bottomInset, unit)
     }
 }
+
+/**
+ * Where each letter sits on a layout, in key widths, for the corrector's "neighbouring keys"
+ * and the swipe decoder's key centres. Accented letters map to their plain key.
+ */
+class KeyMap private constructor(private val pos: Map<Char, FloatArray>, val rowHeight: Float) {
+    fun center(c: Char): FloatArray? = pos[c] ?: pos[Chars.base(c)]
+
+    fun near(a: Char, b: Char): Boolean {
+        val p = center(a) ?: return false
+        val q = center(b) ?: return false
+        val dx = p[0] - q[0]
+        val dy = p[1] - q[1]
+        return dx * dx + dy * dy <= NEAR_KEYS * NEAR_KEYS
+    }
+
+    val letters: Set<Char> get() = pos.keys
+
+    companion object {
+        /** Keys whose centres are this many key widths apart or closer are neighbours. */
+        const val NEAR_KEYS = 1.6f
+
+        fun of(layout: Layout, plan: Plan = Geometry.plan(layout, Frame(1080, 2400, 2.75f), KeyHeight.NORMAL, Mode.DOCKED)): KeyMap {
+            val u = plan.unit
+            val map = HashMap<Char, FloatArray>()
+            var rowH = 1f
+            for (k in plan.keys) {
+                if (!k.key.isLetter) continue
+                map[k.key.output[0]] = floatArrayOf(k.box.cx / u, k.box.cy / u)
+                rowH = k.box.height / u
+            }
+            return KeyMap(map, rowH)
+        }
+    }
+}

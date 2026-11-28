@@ -122,4 +122,36 @@
     <string name="privacy_permissions">Permissions</string>
     <string name="privacy_permissions_none">None. CorkKeys asks Android for no permissions at all.</string>
     <string name="privacy_read_more">Read the full privacy notes</string>
+
+    <!-- Suggestions, learned words, spell checker -->
+    <string name="settings_two_at_once">Two languages at once</string>
+    <string name="settings_two_at_once_sub">With suggestions on, words come from every language that is on, so you can mix them in one sentence without switching.</string>
+    <string name="settings_suggestions">Suggestions</string>
+    <string name="settings_suggestions_sub">Three slots above the keys: what you typed, the best guess, the next guess. Long-press a guess to never see it again.</string>
+    <string name="settings_autocorrect">Autocorrect</string>
+    <string name="settings_autocorrect_sub">Swaps a word that isn\'t in the list on space or punctuation, when the best guess clearly beats it. Backspace straight after puts your word back.</string>
+    <string name="settings_swear">Suggest swear words</string>
+    <string name="settings_swear_sub">Swear words and slurs are never corrected into something else. This only decides whether they show up as suggestions.</string>
+    <string name="settings_no_suggest_fields">Suggestions in no-suggestion fields</string>
+    <string name="settings_no_suggest_fields_sub">Some apps ask the keyboard not to suggest. Never in password fields.</string>
+    <string name="settings_words_sub">See and delete learned words and words you removed.</string>
+    <string name="settings_spell_checker_note">CorkKeys can also be Android\'s spell checker for other apps. Pick it under Android\'s Settings, System, Languages, Spell checker.</string>
+    <string name="about_words">Word lists</string>
+    <string name="about_words_sub">From the Leipzig Corpora Collection, via the aosp-dictionaries repository, under CC BY 4.0.</string>
+    <string name="spell_checker_name">CorkKeys spell checker</string>
+    <string name="privacy_learn">Learn new words</string>
+    <string name="privacy_learn_sub">A word missing from the list is kept once you have typed it in full twice. Only the word: nothing about what came before or after it, when, or how often. Never in password or incognito fields. Turning this off deletes the learned words.</string>
+    <string name="privacy_fact_removed">Words you remove from suggestions are kept the same way, only the word, so they stay removed.</string>
+    <string name="privacy_fact_spell">As Android\'s spell checker, CorkKeys only answers; it keeps nothing and learns nothing from other apps.</string>
+    <string name="words_title">Learned and removed words</string>
+    <string name="words_learned">Learned words</string>
+    <string name="words_learned_none">None.</string>
+    <string name="words_tap_forget">Tap to forget</string>
+    <string name="words_forget_all">Forget all learned words</string>
+    <string name="words_removed">Removed from suggestions</string>
+    <string name="words_removed_none">None. Long-press a suggestion to remove it.</string>
+    <string name="words_tap_allow">Tap to suggest again</string>
+    <string name="words_allow_all">Suggest all of them again</string>
+    <string name="words_delete">Delete</string>
+    <string name="words_all_sure">Delete the whole list?</string>
 </resources>

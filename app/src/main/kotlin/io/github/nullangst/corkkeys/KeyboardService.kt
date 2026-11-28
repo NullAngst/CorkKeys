@@ -12,6 +12,8 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.inputmethodservice.InputMethodService
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -60,6 +62,16 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     private var insetLeft = 0
     private var insetRight = 0
     private var insetBottom = 0
+
+    private val main = Handler(Looper.getMainLooper())
+    private var corrector: Corrector? = null
+    private var correctorKey = ""
+    private var suggestGen = 0
+
+    /** The last suggestions computed: for which word, the candidates, and what autocorrect would do. */
+    private var lastWord = ""
+    private var lastCandidates: List<Candidate> = emptyList()
+    private var lastAuto: String? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -245,6 +257,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
             closeMenu()
             strip?.setToolsOpen(false)
         }
+        loadWords()
         composer.start(info?.initialSelStart ?: -1, info?.initialSelEnd ?: -1)
         Languages.announce(this, prefs.language)
         showLayout()
@@ -255,14 +268,21 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
         keys?.touch?.cancelAll()
+        composer.finish()
         closeMenu()
+        if (!prefs.learn || prefs.incognito) LearnedWords.get(this).forgetPending()
+    }
+
+    override fun onFinishInput() {
+        super.onFinishInput()
+        composer.finish()
     }
 
     override fun onUpdateSelection(
         oldSelStart: Int, oldSelEnd: Int, newSelStart: Int, newSelEnd: Int, candidatesStart: Int, candidatesEnd: Int,
     ) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
-        composer.onSelection(newSelStart, newSelEnd)
+        composer.onSelection(newSelStart, newSelEnd, candidatesStart, candidatesEnd)
         updateShift()
     }
 
@@ -332,7 +352,107 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     }
 
     private fun refreshStrip() {
-        strip?.show(emptyList(), -1)
+        wordChanged()
+    }
+
+    // ---- Words: suggestions, autocorrect, learning ----
+
+    /** Suggestions are on, and this field allows them. */
+    fun composing(): Boolean = prefs.suggestions && field.allowsSuggestions(prefs.inNoSuggestFields)
+
+    fun autocorrectOn(): Boolean = composing() && prefs.autocorrect && field.allowsAutocorrect
+
+    /** Languages whose lists the keyboard needs right now. None at all for a plain keyboard. */
+    private fun wordLanguages(): List<String> =
+        if (prefs.suggestions) Languages.mixed(prefs.language, prefs.languages, mixing()) else emptyList()
+
+    private fun loadWords() {
+        val need = wordLanguages()
+        Dictionaries.keepOnly(need + SpellCheck.inUse)
+        if (need.isEmpty()) return
+        Dictionaries.load(this, need) {
+            main.post {
+                correctorKey = ""
+                if (composer.word.isNotEmpty()) wordChanged()
+            }
+        }
+    }
+
+    /** The corrector for the languages in use, or null while their lists are still loading. */
+    private fun corrector(): Corrector? {
+        val langs = wordLanguages()
+        if (langs.isEmpty()) return null
+        val dicts = langs.mapNotNull { Dictionaries.get(it) }
+        if (dicts.isEmpty() || dicts[0].language != prefs.language) return null
+        val learned = LearnedWords.get(this)
+        val removed = RemovedWords.get(this)
+        val learnOn = prefs.learn
+        val key = langs.joinToString(",") + "|" + dicts.size + "|" + learnOn + "|" + learned.version + "|" + removed.version
+        if (key != correctorKey || corrector == null) {
+            val keyMap = KeyMap.of(Letters.build(Letters.data(prefs.language), false))
+            val mine = if (learnOn) learned.all().toList().takeIf { it.isNotEmpty() }?.let { Dictionary.ofWords("user", it, LEARNED_FREQUENCY) } else null
+            corrector = Corrector(dicts, keyMap, removed.all().toSet(), mine)
+            correctorKey = key
+        }
+        return corrector
+    }
+
+    /** The word being typed changed: work out its suggestions off the main thread. */
+    fun wordChanged() {
+        val s = strip ?: return
+        val typed = composer.word.toString()
+        val gen = ++suggestGen
+        if (typed.isEmpty() || !composing()) {
+            lastWord = ""
+            s.show(emptyList(), -1)
+            return
+        }
+        val c = corrector()
+        if (c == null) {
+            s.show(emptyList(), -1)
+            return
+        }
+        val swear = prefs.swearWords
+        val auto = autocorrectOn()
+        val locked = shift.locked
+        Dictionaries.onWorker {
+            val cands = c.suggest(typed, swear)
+            val fix = if (auto) c.autocorrection(typed, cands) else null
+            main.post {
+                if (gen != suggestGen) return@post
+                lastWord = typed
+                lastCandidates = cands
+                lastAuto = fix
+                showSuggestions(typed, cands, fix, locked)
+            }
+        }
+    }
+
+    private fun showSuggestions(typed: String, cands: List<Candidate>, fix: String?, locked: Boolean) {
+        val words = ArrayList<String>(SuggestionStrip.SLOTS)
+        words += typed
+        for (cand in cands) {
+            if (words.size == SuggestionStrip.SLOTS) break
+            val w = Chars.applyCase(typed, cand.word, locked)
+            if (words.none { it == w } && !cand.word.equals(typed, ignoreCase = false)) words += w
+        }
+        val highlight = if (fix == null) -1 else words.indexOf(Chars.applyCase(typed, fix, locked)).takeIf { it > 0 } ?: -1
+        strip?.show(words, highlight)
+    }
+
+    /** What autocorrect would put in place of [typed], from the last suggestions when they match. */
+    fun autocorrection(typed: String): String? {
+        if (typed == lastWord) return lastAuto
+        val c = corrector() ?: return null
+        return c.autocorrection(typed, c.suggest(typed, prefs.swearWords))
+    }
+
+    /** A word went in exactly as tapped out. Learned only with the switch on, outside incognito and private fields. */
+    fun learn(word: String) {
+        val allowed = prefs.learn && !prefs.incognito && field.allowsLearning
+        if (!allowed) return
+        val c = corrector() ?: return
+        if (LearnedWords.get(this).typedInFull(word, true, c.inList(word))) correctorKey = ""
     }
 
     // ---- Keys ----
@@ -389,7 +509,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     }
 
     private fun type(text: String, letter: Boolean) {
-        composer.text(text)
+        composer.text(text, shift.locked)
         if (letter) shift.typed()
     }
 
@@ -495,9 +615,18 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
 
     override fun pastePressed() = Paste.paste(this, currentInputConnection)
 
-    override fun picked(slot: Int, word: String) {}
+    override fun picked(slot: Int, word: String) {
+        composer.pick(word, slot)
+        updateShift()
+    }
 
-    override fun removeAsked(word: String) {}
+    /** Long-press on a suggestion: never suggest it again. */
+    override fun removeAsked(word: String) {
+        keys?.let { Haptics.longPress(it, prefs.vibrate) }
+        RemovedWords.get(this).add(word)
+        correctorKey = ""
+        wordChanged()
+    }
 
     override fun tool(t: ToolsRow.Tool, v: View) {
         buttonFeedback(v)
@@ -577,5 +706,10 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         } catch (_: Exception) {
         }
         requestHideSelf(0)
+    }
+
+    companion object {
+        /** Learned words count as real words, about as common as an everyday word. */
+        const val LEARNED_FREQUENCY = 120
     }
 }
