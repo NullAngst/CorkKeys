@@ -35,7 +35,8 @@ Before each release, and after an Android update on your own phone:
 1. Install the debug build from the latest Actions run (the `CorkKeys-debug` artifact).
 2. Type in each language: accents, ß and ẞ, ñ, ¿ and ¡, symbols on long-press, both symbol pages, the number and phone pads (a calculator app and the dialer work for those).
 3. Rotate mid-word, in portrait and landscape, with gesture and three-button navigation. Keys should fill the width and stay clear of the navigation bar.
-4. Swipe a few sentences. Try the editing panel, one-handed on both sides, the floating keyboard, all three heights.
+4. Swipe a few sentences. Try the editing panel, one-handed on both sides, the floating keyboard, all the heights.
+4.5. Long-press the comma, slide to emoji, type a few, try a skin tone and a flag, and backspace them. Switch on clipboard history, copy a few things in another app, then paste one from the history button, pin one, and restart the phone to see the saved ones come back.
 5. Paste in a plain text field, Chrome, Firefox and a terminal app (Termux uses the fallback path).
 6. Reboot, and type the lock screen PIN with CorkKeys before unlocking.
 7. Turn on TalkBack and type a word by sliding and lifting.
@@ -75,7 +76,16 @@ The sources change rarely. Every few months:
 3. Open a pull request from that branch. The run's annotations show the new word counts; update the table in README.md to match, since `DictionaryTest` checks it.
 4. Check the typo tables in `CorrectorTest` still pass. If a new list drops a word the extra lists rely on, add it to `<lang>_extra.txt`.
 
-## 6. Adding a language
+## 6. Refresh the emoji
+
+Unicode puts out a new emoji version about once a year, usually in September. Phones only draw the new ones after a system update brings the font, and CorkKeys hides any emoji the font can't draw, so there is no hurry.
+
+1. Download `emoji-test.txt` for the new version from https://unicode.org/Public/emoji/ (the folder named for the version, e.g. `18.0/`).
+2. Run `bash tools/convert_emoji.sh emoji-test.txt`. It rewrites `app/src/main/assets/emoji.txt`.
+3. Run the unit tests; `EmojiDataTest` checks every group is there.
+4. If Unicode added a group, give it a tab icon in `EmojiData.icons`, a title in `EmojiPanel.titleOf` and a string in all three `strings.xml` files.
+
+## 7. Adding a language
 
 1. A layout: copy `LayoutSpanish.kt` to `Layout<Name>.kt` and change the rows and accents. Add it to `Letters.data()` in `Key.kt`.
 2. Add the code to `Languages.ALL`, a name in `Languages.name()`, the currency in `LongPressSymbols.currency()` if it uses €, and a `<subtype>` in both `res/xml/method.xml` and `res/xml/spellchecker.xml`.
@@ -83,6 +93,6 @@ The sources change rarely. Every few months:
 4. A strings folder: copy `res/values/strings.xml` to `res/values-<lang>/strings.xml` and translate it. Lint fails if a string is missing.
 5. Add the language to the tests' language lists, the typo and keep tables in `CorrectorTest`, and the README table.
 
-## 7. Release
+## 8. Release
 
 Follow "Making a release" in the README. Add an entry to `changes.md` first.

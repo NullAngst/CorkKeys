@@ -151,9 +151,34 @@ class LayoutTest {
             val bottom = Letters.build(Letters.data(lang), false).rows.last()
             assertEquals(listOf(Kind.SYMBOLS, Kind.CHAR, Kind.SPACE, Kind.CHAR, Kind.ENTER), bottom.map { it.kind })
             assertEquals(",", bottom[1].output)
-            assertTrue("comma long-press opens settings", bottom[1].longPressSettings)
+            assertEquals("comma long-press offers settings, then emoji", listOf(Key.ACTION_SETTINGS, Key.ACTION_EMOJI), bottom[1].popup)
+            assertEquals(":)", bottom[1].corner)
             assertEquals(".", bottom[3].output)
+            val plain = Letters.build(Letters.data(lang), false, emojiComma = false).rows.last()
+            assertTrue("emoji off: comma long-press opens settings", plain[1].longPressSettings)
+            assertTrue(plain[1].popup.isEmpty())
         }
+    }
+
+    @Test
+    fun symbolPagesShareTheComma() {
+        for (lang in languages) {
+            for (page in listOf(LayoutSymbols.page1(lang), LayoutSymbols.page2(lang))) {
+                val comma = page.rows.last().first { it.output == "," }
+                assertEquals(listOf(Key.ACTION_SETTINGS, Key.ACTION_EMOJI), comma.popup)
+            }
+            val off = LayoutSymbols.page1(lang, emojiComma = false).rows.last().first { it.output == "," }
+            assertTrue(off.longPressSettings)
+        }
+    }
+
+    @Test
+    fun actionsAreNeverTyped() {
+        assertTrue(Key.isAction(Key.ACTION_SETTINGS))
+        assertTrue(Key.isAction(Key.ACTION_EMOJI))
+        assertFalse(Key.isAction(","))
+        // Private-use characters: no font draws them and no app expects them.
+        for (a in listOf(Key.ACTION_SETTINGS, Key.ACTION_EMOJI)) assertEquals(Character.PRIVATE_USE.toInt(), Character.getType(a[0]))
     }
 
     @Test

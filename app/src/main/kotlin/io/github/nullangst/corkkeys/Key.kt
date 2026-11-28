@@ -33,6 +33,20 @@ class Key(
     fun shifted(): String = shiftText(output)
 
     companion object {
+        /** Long-press entries that do something instead of typing. Private-use characters, never typed. */
+        const val ACTION_SETTINGS = "\uE000"
+        const val ACTION_EMOJI = "\uE001"
+
+        fun isAction(s: String) = s == ACTION_SETTINGS || s == ACTION_EMOJI
+
+        /**
+         * The comma key. With [emoji] on it shows a small :) and its long-press offers settings
+         * and the emoji board; with it off, a long-press goes straight to settings.
+         */
+        fun comma(emoji: Boolean): Key =
+            if (emoji) Key(",", corner = ":)", popup = listOf(ACTION_SETTINGS, ACTION_EMOJI))
+            else Key(",", longPressSettings = true)
+
         /** Upper case for one key's text. ß becomes ẞ instead of "SS", so it stays one letter. */
         fun shiftText(s: String): String = when (s) {
             "ß" -> "ẞ"
@@ -75,7 +89,7 @@ object Letters {
      * Letter keys get their corner symbol from [LongPressSymbols] by position, so every language
      * has the same symbol in the same spot, and their accents after it in the same popup.
      */
-    fun build(data: LetterData, numberRow: Boolean): Layout {
+    fun build(data: LetterData, numberRow: Boolean, emojiComma: Boolean = true): Layout {
         val lang = data.language
         val letterRows = data.rows.mapIndexed { r, row ->
             row.mapIndexed { c, ch ->
@@ -94,7 +108,7 @@ object Letters {
         rows += listOf(Key("", kind = Kind.SHIFT, width = side)) + bottomLetters + Key("", kind = Kind.BACKSPACE, width = side)
         rows += listOf(
             Key("?123", kind = Kind.SYMBOLS, width = 1.5f),
-            Key(",", longPressSettings = true),
+            Key.comma(emojiComma),
             Key("", " ", Kind.SPACE, width = units - 5f),
             Key(".", popup = periodPopup + data.periodExtra),
             Key("", "\n", Kind.ENTER, width = 1.5f),

@@ -15,13 +15,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 
 /**
- * The row the tools button opens in the strip: editing panel, one-handed, floating, the voice
+ * The row the tools button opens in the strip: editing panel, emoji, one-handed, floating, the voice
  * keyboard (only once one is picked in settings) and settings.
  */
 @SuppressLint("ViewConstructor")
 class ToolsRow(ctx: Context, private val host: Host) : LinearLayout(ctx) {
     enum class Tool(val icon: Int, val desc: Int) {
         EDIT(R.drawable.ic_edit, R.string.cd_edit),
+        EMOJI(R.drawable.ic_emoji, R.string.cd_emoji),
         ONE_HANDED(R.drawable.ic_one_handed, R.string.cd_one_handed),
         FLOATING(R.drawable.ic_floating, R.string.cd_floating),
         VOICE(R.drawable.ic_mic, R.string.cd_voice),

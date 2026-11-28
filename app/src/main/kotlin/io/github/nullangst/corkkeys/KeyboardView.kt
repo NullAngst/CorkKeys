@@ -64,6 +64,10 @@ class KeyboardView(ctx: Context, host: TouchHost) : View(ctx) {
 
     init {
         isHapticFeedbackEnabled = true
+        val icons = HashMap<String, android.graphics.drawable.Drawable>()
+        ctx.getDrawable(R.drawable.ic_settings)?.mutate()?.let { icons[Key.ACTION_SETTINGS] = it }
+        ctx.getDrawable(R.drawable.ic_emoji)?.mutate()?.let { icons[Key.ACTION_EMOJI] = it }
+        popup.icons = icons
     }
 
     fun dp(v: Float) = v * resources.displayMetrics.density
@@ -188,7 +192,13 @@ class KeyboardView(ctx: Context, host: TouchHost) : View(ctx) {
                 val corner = k.corner
                 // Phone pad: digits sit a little high, their letters underneath.
                 val wide = r.width() > h * 1.6f
-                if (corner != null && wide) {
+                if (corner != null && Key.ACTION_EMOJI in k.popup) {
+                    // The comma: a small :) right above it, saying a long-press has emoji.
+                    c.drawText(text, r.centerX(), r.centerY() + h * 0.08f - (label.descent() + label.ascent()) / 2f, label)
+                    small.color = pal.textDim
+                    small.textSize = h * 0.2f
+                    c.drawText(corner, r.centerX(), r.top + h * 0.32f, small)
+                } else if (corner != null && wide) {
                     c.drawText(text, r.centerX(), r.centerY() - h * 0.05f - (label.descent() + label.ascent()) / 2f, label)
                     small.color = pal.textDim
                     small.textSize = h * 0.2f

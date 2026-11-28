@@ -8,6 +8,7 @@ package io.github.nullangst.corkkeys
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.drawable.Drawable
 
 /**
  * The long-press chooser: the key's symbol first, then its accents or variants, in a row above
@@ -23,6 +24,9 @@ class LongPressPopup {
     private var top = 0f
     private var cell = 0f
     private var cellH = 0f
+
+    /** Icons drawn in place of text, for entries that are actions (the comma's settings and emoji). */
+    var icons: Map<String, Drawable> = emptyMap()
 
     val showing: Boolean get() = options.isNotEmpty()
     val text: String? get() = options.getOrNull(selected)
@@ -87,7 +91,17 @@ class LongPressPopup {
                 c.drawRoundRect(r, radius * 0.8f, radius * 0.8f, bg)
             }
             label.color = if (i == selected) pal.onAccent else pal.text
-            c.drawText(s, r.centerX(), r.centerY() - (label.descent() + label.ascent()) / 2f, label)
+            val ic = icons[s]
+            if (ic != null) {
+                val half = (cellH * 0.24f).toInt()
+                val cx = r.centerX().toInt()
+                val cy = r.centerY().toInt()
+                ic.setBounds(cx - half, cy - half, cx + half, cy + half)
+                ic.setTint(label.color)
+                ic.draw(c)
+            } else {
+                c.drawText(s, r.centerX(), r.centerY() - (label.descent() + label.ascent()) / 2f, label)
+            }
         }
     }
 

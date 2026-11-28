@@ -66,6 +66,25 @@ class PrivacyActivity : Activity() {
             prefs.incognito = it
             build()
         })
+        add(Ui.switchRow(this, pal, str(R.string.privacy_clip), prefs.clipHistory, str(R.string.privacy_clip_sub)) { on ->
+            prefs.clipHistory = on
+            val h = ClipboardHistory.get(this)
+            // Off means gone: memory, the saved file and pinned clips.
+            if (on) h.sync() else h.wipe()
+            build()
+        })
+        if (prefs.clipHistory) {
+            val names = KEEP_CHOICES.map { keepName(it) }
+            val current = KEEP_CHOICES.indexOf(prefs.clipKeep).coerceAtLeast(0)
+            add(Ui.row(this, pal, str(R.string.privacy_clip_keep), keepName(prefs.clipKeep)) {
+                Ui.choose(this, pal, str(R.string.privacy_clip_keep), names, current) {
+                    prefs.clipKeep = KEEP_CHOICES[it]
+                    ClipboardHistory.get(this).save()
+                    build()
+                }
+            })
+            add(Ui.note(this, pal, str(R.string.privacy_clip_keep_note)))
+        }
 
         add(Ui.header(this, pal, str(R.string.privacy_facts)))
         for (id in listOf(
@@ -92,6 +111,8 @@ class PrivacyActivity : Activity() {
         list.addView(View(this), LinearLayout.LayoutParams(1, Ui.dp(this, 24f)))
     }
 
+    private fun keepName(n: Int) = if (n == 0) str(R.string.privacy_clip_keep_none) else getString(R.string.privacy_clip_keep_n, n)
+
     /** Every permission in the installed app's manifest. There should be none. */
     private fun requested(): List<String> = try {
         packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS).requestedPermissions?.toList().orEmpty()
@@ -100,6 +121,7 @@ class PrivacyActivity : Activity() {
     }
 
     companion object {
+        val KEEP_CHOICES = listOf(0, 1, 3, 5, 10, 20, Prefs.CLIP_KEEP_MAX)
         const val PRIVACY_URL = "https://github.com/NullAngst/CorkKeys/blob/main/PRIVACY.md"
     }
 }

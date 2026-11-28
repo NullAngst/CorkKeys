@@ -21,13 +21,14 @@ import android.widget.TextView
 /**
  * The strip above the keys: the tools button at the left end, three suggestion slots in the
  * middle (what you typed, the best guess, the next guess), and the Paste button at the right
- * end, always there. With tools open, the slots give way to the tools row.
+ * end, always there. With clipboard history on, its button sits just left of Paste. With tools open, the slots give way to the tools row.
  */
 @SuppressLint("ViewConstructor")
 class SuggestionStrip(ctx: Context, private val host: Host) : LinearLayout(ctx) {
     interface Host {
         fun toolsPressed()
         fun pastePressed()
+        fun historyPressed()
         fun picked(slot: Int, word: String)
         fun removeAsked(word: String)
         fun buttonFeedback(v: View)
@@ -42,6 +43,11 @@ class SuggestionStrip(ctx: Context, private val host: Host) : LinearLayout(ctx) 
         host.buttonFeedback(it)
         host.pastePressed()
     }
+    private val historyButton = icon(R.drawable.ic_clipboard_history, R.string.cd_clip_history) {
+        host.buttonFeedback(it)
+        host.historyPressed()
+    }
+    private var historyOpen = false
     private val middle = FrameLayout(ctx)
     private val slots = LinearLayout(ctx).apply { orientation = HORIZONTAL }
     private val slotViews = ArrayList<TextView>()
@@ -99,7 +105,9 @@ class SuggestionStrip(ctx: Context, private val host: Host) : LinearLayout(ctx) 
         val side = (BUTTON_DP * d).toInt()
         addView(toolsButton, LayoutParams(side, ViewGroup.LayoutParams.MATCH_PARENT))
         addView(middle, LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f))
+        addView(historyButton, LayoutParams(side, ViewGroup.LayoutParams.MATCH_PARENT))
         addView(pasteButton, LayoutParams(side, ViewGroup.LayoutParams.MATCH_PARENT))
+        historyButton.visibility = GONE
         show(emptyList(), -1)
     }
 
@@ -120,6 +128,7 @@ class SuggestionStrip(ctx: Context, private val host: Host) : LinearLayout(ctx) 
         val tint = ColorStateList.valueOf(p.textDim)
         toolsButton.imageTintList = if (toolsOpen) ColorStateList.valueOf(p.accent) else tint
         pasteButton.imageTintList = tint
+        historyButton.imageTintList = if (historyOpen) ColorStateList.valueOf(p.accent) else tint
         for (div in dividers) div.setBackgroundColor(p.line)
         for (tv in slotViews) tv.setTextColor(p.text)
     }
@@ -137,6 +146,16 @@ class SuggestionStrip(ctx: Context, private val host: Host) : LinearLayout(ctx) 
             tv.importantForAccessibility = if (w == null) IMPORTANT_FOR_ACCESSIBILITY_NO else IMPORTANT_FOR_ACCESSIBILITY_YES
         }
         for (div in dividers) div.visibility = if (list.isEmpty()) INVISIBLE else VISIBLE
+    }
+
+    /** The clipboard history button, next to Paste. Only there while history is on and allowed here. */
+    fun setHistoryShown(shown: Boolean) {
+        historyButton.visibility = if (shown) VISIBLE else GONE
+    }
+
+    fun setHistoryOpen(open: Boolean) {
+        historyOpen = open
+        applyPalette(pal)
     }
 
     fun setToolsOpen(open: Boolean) {

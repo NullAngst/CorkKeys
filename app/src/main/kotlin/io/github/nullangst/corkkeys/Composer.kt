@@ -114,6 +114,19 @@ class Composer(private val svc: KeyboardService) {
         block(c)
     }
 
+    /** How many chars the last user-visible character of [text] takes, by Unicode's rules. */
+    private fun lastGrapheme(text: CharSequence): Int {
+        val s = text.toString()
+        return try {
+            val it = android.icu.text.BreakIterator.getCharacterInstance()
+            it.setText(s)
+            val start = it.preceding(s.length)
+            if (start == android.icu.text.BreakIterator.DONE) 1 else (s.length - start).coerceAtLeast(1)
+        } catch (_: Exception) {
+            if (s.length >= 2 && Character.isSurrogatePair(s[s.length - 2], s[s.length - 1])) 2 else 1
+        }
+    }
+
     private fun isWordStart(c: Char) = c.isLetter()
     private fun isWordChar(c: Char) = c.isLetter() || c == '\'' || c == '’'
 
@@ -340,13 +353,15 @@ class Composer(private val svc: KeyboardService) {
             edit { it.commitText("", 1) }
             return
         }
-        val before = c.getTextBeforeCursor(2, 0)
+        val before = c.getTextBeforeCursor(GRAPHEME_CHARS, 0)
         if (before.isNullOrEmpty()) {
             key(KeyEvent.KEYCODE_DEL)
             return
         }
-        val n = if (before.length == 2 && Character.isSurrogatePair(before[0], before[1])) 2 else 1
-        edit { it.deleteSurroundingTextInCodePoints(1, 0) }
+        // One backspace takes one whole character as you see it: a family emoji or a flag is
+        // several code points, and taking only the last one leaves junk behind.
+        val n = lastGrapheme(before)
+        edit { it.deleteSurroundingText(n, 0) }
         // Backspacing into a word brings its suggestions back. The cursor moved left by what went.
         if (selStart >= n && selStart == selEnd) {
             selStart -= n
@@ -419,5 +434,8 @@ class Composer(private val svc: KeyboardService) {
 
         /** The longest word picked back up from before the cursor. */
         const val RESYNC_CHARS = 48
+
+        /** Enough for the longest emoji sequence (a family with skin tones is about 20 chars). */
+        const val GRAPHEME_CHARS = 32
     }
 }

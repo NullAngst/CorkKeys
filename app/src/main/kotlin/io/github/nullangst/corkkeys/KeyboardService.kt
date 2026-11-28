@@ -6,6 +6,7 @@
 package io.github.nullangst.corkkeys
 
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -35,7 +36,8 @@ import android.widget.LinearLayout
  * ([onComputeInsets]); everything else goes straight to the app.
  */
 class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, ToolsRow.Host,
-    EditingPanel.Host, LanguageMenu.Host, KeyAccessibility.Host, FloatingKeyboard.Host {
+    EditingPanel.Host, LanguageMenu.Host, KeyAccessibility.Host, FloatingKeyboard.Host,
+    ClipboardPanel.Host, EmojiPanel.Host {
 
     lateinit var prefs: Prefs
         private set
@@ -59,6 +61,10 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     private var panel: EditingPanel? = null
     private var menu: LanguageMenu? = null
     private var floater: FloatingKeyboard? = null
+    private var clips: ClipboardPanel? = null
+    private var emojis: EmojiPanel? = null
+    private val recents = EmojiRecents()
+    private lateinit var history: ClipboardHistory
 
     private var insetLeft = 0
     private var insetTop = 0
@@ -84,6 +90,15 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         super.onCreate()
         prefs = Prefs.open(this)
         pal = Themes.palette(this, prefs.theme)
+        history = ClipboardHistory.get(this)
+        history.incognito = { incognito() }
+        history.changed = { main.post { if (clips?.visibility == View.VISIBLE) showClips() } }
+        history.sync()
+    }
+
+    override fun onDestroy() {
+        history.changed = null
+        super.onDestroy()
     }
 
     // ---- Views ----
@@ -111,8 +126,12 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         trail = tr
         val p = EditingPanel(this, this).apply { visibility = View.GONE }
         val m = LanguageMenu(this, this).apply { visibility = View.GONE }
+        val cp = ClipboardPanel(this, this).apply { visibility = View.GONE }
+        val ep = EmojiPanel(this, this).apply { visibility = View.GONE }
         area.addView(kv, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         area.addView(p, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0))
+        area.addView(cp, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0))
+        area.addView(ep, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0))
         area.addView(m, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         val stripH = (SuggestionStrip.HEIGHT_DP * resources.displayMetrics.density).toInt()
         val fk = FloatingKeyboard(this, this).apply {
@@ -140,7 +159,11 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         panel = p
         menu = m
         floater = fk
+        clips = cp
+        emojis = ep
         applyPalette()
+        // Get the emoji list ready while nobody is waiting for it.
+        if (prefs.emojiComma) Dictionaries.onWorker { EmojiData.load(this) }
         return r
     }
 
@@ -275,19 +298,21 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         }
     }
 
+    /** The panels that take the keys' place are exactly as tall as the keys, so nothing jumps. */
     private fun syncPanelHeight() {
         val kv = keys ?: return
-        val p = panel ?: return
         kv.post {
             val h = kv.plan?.height?.toInt() ?: return@post
-            val lp = p.layoutParams
-            if (lp.height != h) {
-                lp.height = h
-                p.layoutParams = lp
+            for (p in listOfNotNull(panel, clips, emojis)) {
+                val lp = p.layoutParams
+                if (lp.height != h) {
+                    lp.height = h
+                    p.layoutParams = lp
+                }
+                val pad = (3 * resources.displayMetrics.density).toInt()
+                if (mode() == Mode.FLOATING) p.setPadding(0, p.paddingTop, 0, pad)
+                else p.setPadding(insetLeft, p.paddingTop, insetRight, insetBottom + pad)
             }
-            val pad = (3 * resources.displayMetrics.density).toInt()
-            if (mode() == Mode.FLOATING) p.setPadding(0, p.paddingTop, 0, pad)
-            else p.setPadding(insetLeft, p.paddingTop, insetRight, insetBottom + pad)
         }
     }
 
@@ -322,8 +347,12 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
             shift.reset()
             closeEditing()
             closeMenu()
+            closeClips()
+            closeEmoji()
             strip?.setToolsOpen(false)
         }
+        history.sync()
+        strip?.setHistoryShown(historyAllowed())
         loadWords()
         composer.start(info?.initialSelStart ?: -1, info?.initialSelEnd ?: -1)
         Languages.announce(this, prefs.language)
@@ -368,12 +397,14 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         strip?.applyPalette(pal)
         tools?.applyPalette(pal)
         panel?.applyPalette(pal)
+        clips?.applyPalette(pal)
+        emojis?.applyPalette(pal)
         floater?.applyPalette(pal)
         container?.setBackgroundColor(pal.keyboardBg)
         keys?.invalidate()
     }
 
-    private fun baseLayout(): Layout = Field.layoutFor(field.kind, prefs.language, prefs.numberRow)
+    private fun baseLayout(): Layout = Field.layoutFor(field.kind, prefs.language, prefs.numberRow, prefs.emojiComma)
 
     private fun letterRows(): Int = Letters.build(Letters.data(prefs.language), prefs.numberRow).rows.size
 
@@ -382,8 +413,8 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         val lang = prefs.language
         val layout = when (page) {
             Page.BASE -> baseLayout()
-            Page.SYMBOLS -> LayoutSymbols.page1(lang)
-            Page.SYMBOLS_MORE -> LayoutSymbols.page2(lang)
+            Page.SYMBOLS -> LayoutSymbols.page1(lang, prefs.emojiComma)
+            Page.SYMBOLS_MORE -> LayoutSymbols.page2(lang, prefs.emojiComma)
         }
         val rows = when (field.kind) {
             FieldKind.TEXT, FieldKind.EMAIL, FieldKind.URL -> letterRows()
@@ -606,6 +637,16 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     }
 
     override fun popupPicked(text: String) {
+        when (text) {
+            Key.ACTION_SETTINGS -> {
+                openSettings()
+                return
+            }
+            Key.ACTION_EMOJI -> {
+                openEmoji()
+                return
+            }
+        }
         type(text, text.length == 1 && text[0].isLetter())
         updateShift()
     }
@@ -779,6 +820,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
         buttonFeedback(v)
         when (t) {
             ToolsRow.Tool.EDIT -> openEditing()
+            ToolsRow.Tool.EMOJI -> openEmoji()
             ToolsRow.Tool.SETTINGS -> openSettings()
             ToolsRow.Tool.ONE_HANDED -> {
                 OneHanded.toggle(prefs)
@@ -799,6 +841,8 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
 
     private fun openEditing() {
         val p = panel ?: return
+        closeClips()
+        closeEmoji()
         editing = true
         p.reset()
         syncPanelHeight()
@@ -807,6 +851,7 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     }
 
     private fun closeEditing() {
+        if (!editing && panel?.visibility == View.GONE) return
         editing = false
         panel?.visibility = View.GONE
         keys?.visibility = View.VISIBLE
@@ -830,6 +875,109 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
             EditingPanel.Action.BACKSPACE -> composer.backspace()
             EditingPanel.Action.CLOSE -> closeEditing()
         }
+    }
+
+    // ---- Clipboard history ----
+
+    /** The history button shows with history on, outside password fields, and never on the lock screen. */
+    private fun historyAllowed(): Boolean {
+        if (!prefs.clipHistory || field.password) return false
+        val locked = try {
+            getSystemService(KeyguardManager::class.java)?.isKeyguardLocked == true
+        } catch (_: Exception) {
+            true
+        }
+        return !locked
+    }
+
+    override fun historyPressed() {
+        if (clips?.visibility == View.VISIBLE) {
+            closeClips()
+            return
+        }
+        if (!historyAllowed()) return
+        closeEditing()
+        closeEmoji()
+        keys?.touch?.cancelAll()
+        strip?.setToolsOpen(false)
+        syncPanelHeight()
+        showClips()
+        clips?.visibility = View.VISIBLE
+        keys?.visibility = View.INVISIBLE
+        strip?.setHistoryOpen(true)
+    }
+
+    private fun showClips() {
+        clips?.show(history.shown())
+    }
+
+    private fun closeClips() {
+        val c = clips ?: return
+        if (c.visibility == View.GONE) return
+        c.visibility = View.GONE
+        keys?.visibility = View.VISIBLE
+        strip?.setHistoryOpen(false)
+    }
+
+    override fun clipPicked(text: String) {
+        closeClips()
+        composer.text(text)
+        updateShift()
+    }
+
+    override fun clipPin(c: Clip, on: Boolean) {
+        history.pin(c, on)
+        showClips()
+    }
+
+    override fun clipDelete(c: Clip) {
+        history.delete(c)
+        showClips()
+    }
+
+    override fun clipClear() {
+        history.clearUnpinned()
+        showClips()
+    }
+
+    override fun clipClose() = closeClips()
+
+    // ---- Emoji ----
+
+    private fun openEmoji() {
+        val ep = emojis ?: return
+        closeEditing()
+        closeClips()
+        closeMenu()
+        keys?.touch?.cancelAll()
+        strip?.setToolsOpen(false)
+        syncPanelHeight()
+        ep.visibility = View.VISIBLE
+        keys?.visibility = View.INVISIBLE
+        Dictionaries.onWorker {
+            val groups = EmojiData.load(this)
+            main.post { if (ep.visibility == View.VISIBLE) ep.show(groups, recents) }
+        }
+    }
+
+    private fun closeEmoji() {
+        val ep = emojis ?: return
+        if (ep.visibility == View.GONE) return
+        ep.visibility = View.GONE
+        keys?.visibility = View.VISIBLE
+    }
+
+    override fun emojiPicked(text: String) {
+        composer.text(text)
+    }
+
+    override fun emojiBackspace() {
+        composer.backspace()
+    }
+
+    override fun emojiClose() {
+        closeEmoji()
+        updateShift()
     }
 
     private fun openMenu() {

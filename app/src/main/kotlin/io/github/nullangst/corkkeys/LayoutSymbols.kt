@@ -39,15 +39,15 @@ object LayoutSymbols {
 
     private fun sym(s: String) = Key(s, popup = variants[s].orEmpty())
 
-    private fun bottom(units: Float) = listOf(
+    private fun bottom(units: Float, emojiComma: Boolean) = listOf(
         Key("ABC", kind = Kind.LETTERS, width = 1.5f),
-        Key(",", longPressSettings = true),
+        Key.comma(emojiComma),
         Key("", " ", Kind.SPACE, width = units - 5f),
         Key(".", popup = variants.getValue(".")),
         Key("", "\n", Kind.ENTER, width = 1.5f),
     )
 
-    fun page1(language: String): Layout {
+    fun page1(language: String, emojiComma: Boolean = true): Layout {
         val cur = LongPressSymbols.currency(language)
         val rows = listOf(
             "1234567890".map { sym(it.toString()) },
@@ -56,12 +56,12 @@ object LayoutSymbols {
             listOf(Key("=\\<", kind = Kind.SYMBOLS_MORE, width = 1.5f)) +
                 LongPressSymbols.rows[2].map { sym(it) } +
                 Key("", kind = Kind.BACKSPACE, width = 1.5f),
-            bottom(10f),
+            bottom(10f, emojiComma),
         )
         return Layout("symbols_$language", rows)
     }
 
-    fun page2(language: String): Layout {
+    fun page2(language: String, emojiComma: Boolean = true): Layout {
         val first = if (LongPressSymbols.currency(language) == "€") "$" else "€"
         val currencies = listOf(first, "£", "¥", "¢", "₹", "₩", "₽")
         val rows = listOf(
@@ -71,7 +71,7 @@ object LayoutSymbols {
             listOf(Key("?123", kind = Kind.SYMBOLS, width = 1.5f)) +
                 listOf("«", "»", "‹", "›", "⟨", "⟩", "¬").map { sym(it) } +
                 Key("", kind = Kind.BACKSPACE, width = 1.5f),
-            bottom(10f),
+            bottom(10f, emojiComma),
         )
         return Layout("symbols2_$language", rows)
     }
