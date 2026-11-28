@@ -154,4 +154,8 @@
     <string name="words_allow_all">Suggest all of them again</string>
     <string name="words_delete">Delete</string>
     <string name="words_all_sure">Delete the whole list?</string>
+
+    <!-- Swipe -->
+    <string name="settings_swipe">Swipe typing</string>
+    <string name="settings_swipe_sub">Slide across the letters and lift: the word goes in, with alternatives in the strip. Backspace straight after removes the whole word. Off in password, email, address and number fields.</string>
 </resources>

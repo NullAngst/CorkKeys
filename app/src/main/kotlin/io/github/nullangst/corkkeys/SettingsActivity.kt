@@ -110,6 +110,7 @@ class SettingsActivity : Activity() {
         switch(R.string.settings_no_suggest_fields, prefs.inNoSuggestFields, R.string.settings_no_suggest_fields_sub, prefs.suggestions) {
             prefs.inNoSuggestFields = it
         }
+        switch(R.string.settings_swipe, prefs.swipe, R.string.settings_swipe_sub) { prefs.swipe = it }
         add(Ui.row(this, pal, str(R.string.words_title), str(R.string.settings_words_sub)) {
             startActivity(Intent(this, WordListsActivity::class.java))
         })
