@@ -67,6 +67,11 @@ object Geometry {
 
     /** The keys never take more than this share of the window's height. */
     const val MAX_HEIGHT_FRACTION = 0.42f
+
+    /** Less in landscape, where the window is short and the app needs room above the keys. */
+    const val LANDSCAPE_MAX_HEIGHT_FRACTION = 0.34f
+
+    fun maxKeysFraction(f: Frame): Float = if (f.landscape) LANDSCAPE_MAX_HEIGHT_FRACTION else MAX_HEIGHT_FRACTION
     const val FLOAT_MAX_HEIGHT_FRACTION = 0.34f
 
     const val FLOAT_MAX_WIDTH_DP = 400f
@@ -107,7 +112,7 @@ object Geometry {
 
         val pad = PAD_DP * d
         var rowH = height.dp * d * (if (floating) FLOAT_SCALE else 1f)
-        val maxKeys = frame.windowHeight * (if (floating) FLOAT_MAX_HEIGHT_FRACTION else MAX_HEIGHT_FRACTION)
+        val maxKeys = frame.windowHeight * (if (floating) FLOAT_MAX_HEIGHT_FRACTION else maxKeysFraction(frame))
         if (rowH * rowsForHeight > maxKeys) rowH = maxKeys / rowsForHeight
         val keysHeight = rowH * rowsForHeight
         val actualRowH = keysHeight / layout.rows.size

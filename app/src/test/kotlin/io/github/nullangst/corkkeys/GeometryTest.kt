@@ -58,7 +58,8 @@ class GeometryTest {
         assertTrue(short < normal && normal < tall)
         for (fr in frames) for (h in KeyHeight.entries) {
             val p = Geometry.plan(l, fr, h, Mode.DOCKED)
-            assertTrue("keys stay under the height cap", p.height - fr.insetBottom <= fr.windowHeight * Geometry.MAX_HEIGHT_FRACTION + 6 * 3.5f * fr.density)
+            assertTrue("keys stay under the height cap", p.height - fr.insetBottom <= fr.windowHeight * Geometry.maxKeysFraction(fr) + 6 * 3.5f * fr.density)
+            if (fr.landscape) assertTrue("landscape leaves the app most of the screen", p.height - fr.insetBottom <= fr.windowHeight * 0.36f)
         }
     }
 

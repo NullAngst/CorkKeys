@@ -226,6 +226,14 @@ class KeyboardService : InputMethodService(), TouchHost, SuggestionStrip.Host, T
     private fun applyFrame() {
         val f = frame()
         keys?.setFrame(f)
+        strip?.let { st ->
+            val h = ((if (f.landscape) SuggestionStrip.LANDSCAPE_HEIGHT_DP else SuggestionStrip.HEIGHT_DP) * f.density).toInt()
+            val lp = st.layoutParams
+            if (lp != null && lp.height != h) {
+                lp.height = h
+                st.layoutParams = lp
+            }
+        }
         applyMode()
         syncPanelHeight()
     }
